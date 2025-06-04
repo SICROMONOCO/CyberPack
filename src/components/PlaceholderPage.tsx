@@ -1,10 +1,11 @@
 
 import React from 'react';
+import { LucideIcon } from 'lucide-react';
 
 interface PlaceholderPageProps {
   title: string;
   description: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
 }
 
 const PlaceholderPage = ({ title, description, icon: Icon }: PlaceholderPageProps) => {

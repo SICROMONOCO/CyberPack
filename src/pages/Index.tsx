@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import HomePage from '@/components/HomePage';
+import SubjectsPage from '@/components/SubjectsPage';
 import PlaceholderPage from '@/components/PlaceholderPage';
 
 const Index = () => {
@@ -22,13 +23,7 @@ const Index = () => {
       case 'home':
         return <HomePage />;
       case 'subjects':
-        return (
-          <PlaceholderPage
-            title="Cybersecurity Subjects"
-            description="Access comprehensive study materials for all your cybersecurity courses and academic branches."
-            icon={BookOpen}
-          />
-        );
+        return <SubjectsPage />;
       case 'resources':
         return (
           <PlaceholderPage
