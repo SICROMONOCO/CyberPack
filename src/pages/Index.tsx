@@ -1,12 +1,79 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import { BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
+import Sidebar from '@/components/Sidebar';
+import HomePage from '@/components/HomePage';
+import PlaceholderPage from '@/components/PlaceholderPage';
 
 const Index = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeItem, setActiveItem] = useState('home');
+
+  const handleToggle = () => {
+    setIsCollapsed(!isCollapsed);
+  };
+
+  const handleItemClick = (item: string) => {
+    setActiveItem(item);
+  };
+
+  const renderContent = () => {
+    switch (activeItem) {
+      case 'home':
+        return <HomePage />;
+      case 'subjects':
+        return (
+          <PlaceholderPage
+            title="Cybersecurity Subjects"
+            description="Access comprehensive study materials for all your cybersecurity courses and academic branches."
+            icon={BookOpen}
+          />
+        );
+      case 'resources':
+        return (
+          <PlaceholderPage
+            title="Resources"
+            description="Download and access study resources, notes, presentations, and reference materials."
+            icon={FolderOpen}
+          />
+        );
+      case 'support':
+        return (
+          <PlaceholderPage
+            title="Support & Help"
+            description="Get assistance and find answers to your academic questions from our support team."
+            icon={HelpCircle}
+          />
+        );
+      case 'about':
+        return (
+          <PlaceholderPage
+            title="About Us"
+            description="Learn more about CyberPack's mission to support cybersecurity students in their academic journey."
+            icon={Info}
+          />
+        );
+      default:
+        return <HomePage />;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gray-950 flex">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={handleToggle}
+        activeItem={activeItem}
+        onItemClick={handleItemClick}
+      />
+      
+      <main
+        className={`flex-1 transition-all duration-300 ${
+          isCollapsed ? 'ml-16' : 'ml-64'
+        }`}
+      >
+        {renderContent()}
+      </main>
     </div>
   );
 };
