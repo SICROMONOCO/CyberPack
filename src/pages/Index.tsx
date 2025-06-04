@@ -1,10 +1,12 @@
+
 import React, { useState } from 'react';
 import { BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import HomePage from '@/components/HomePage';
 import SubjectsPage from '@/components/SubjectsPage';
 import ResourcesPage from '@/components/ResourcesPage';
-import PlaceholderPage from '@/components/PlaceholderPage';
+import SupportPage from '@/components/SupportPage';
+import AboutPage from '@/components/AboutPage';
 
 const Index = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -27,21 +29,9 @@ const Index = () => {
       case 'resources':
         return <ResourcesPage />;
       case 'support':
-        return (
-          <PlaceholderPage
-            title="Support & Help"
-            description="Get assistance and find answers to your academic questions from our support team."
-            icon={HelpCircle}
-          />
-        );
+        return <SupportPage />;
       case 'about':
-        return (
-          <PlaceholderPage
-            title="About Us"
-            description="Learn more about CyberPack's mission to support cybersecurity students in their academic journey."
-            icon={Info}
-          />
-        );
+        return <AboutPage />;
       default:
         return <HomePage />;
     }
@@ -68,3 +58,4 @@ const Index = () => {
 };
 
 export default Index;
+
