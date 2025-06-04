@@ -20,9 +20,10 @@ const ResourcesPage = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<string>('all');
   const [showManager, setShowManager] = useState(false);
+  const [resourcesData, setResourcesData] = useState(mockResourcesData);
 
   // Get all available options for filters
-  const branches = mockResourcesData;
+  const branches = resourcesData;
   const semesters = useMemo(() => {
     if (selectedBranch === 'all') return [];
     const branch = branches.find(b => b.id === selectedBranch);
@@ -138,6 +139,10 @@ const ResourcesPage = () => {
     setSelectedSubject('all');
   };
 
+  const handleUpdateData = (newData: any) => {
+    setResourcesData(newData.branches);
+  };
+
   // Get resource statistics
   const stats = useMemo(() => {
     const total = allResources.length;
@@ -151,21 +156,11 @@ const ResourcesPage = () => {
 
   if (showManager) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white">
-        <div className="container mx-auto p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              onClick={() => setShowManager(false)}
-              variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-800"
-            >
-              ← Back to Resources
-            </Button>
-            <h1 className="text-3xl font-bold">Resource Management</h1>
-          </div>
-          <ResourceManager />
-        </div>
-      </div>
+      <ResourceManager
+        data={{ branches: resourcesData }}
+        onUpdate={handleUpdateData}
+        onClose={() => setShowManager(false)}
+      />
     );
   }
 
@@ -394,4 +389,3 @@ const ResourcesPage = () => {
 };
 
 export default ResourcesPage;
-
