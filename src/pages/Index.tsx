@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import HomePage from '@/components/HomePage';
 import SubjectsPage from '@/components/SubjectsPage';
+import ResourcesPage from '@/components/ResourcesPage';
 import PlaceholderPage from '@/components/PlaceholderPage';
 
 const Index = () => {
@@ -25,13 +25,7 @@ const Index = () => {
       case 'subjects':
         return <SubjectsPage />;
       case 'resources':
-        return (
-          <PlaceholderPage
-            title="Resources"
-            description="Download and access study resources, notes, presentations, and reference materials."
-            icon={FolderOpen}
-          />
-        );
+        return <ResourcesPage />;
       case 'support':
         return (
           <PlaceholderPage
