@@ -34,6 +34,13 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Reset to home if user logs out or is already logged in and selects login
+  useEffect(() => {
+    if (!isAuthenticated && activeItem === 'login') {
+      setActiveItem('home');
+    }
+  }, [isAuthenticated, activeItem]);
+
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -50,13 +57,6 @@ const Index = () => {
   if (activeItem === 'login' && !isAuthenticated) {
     return <LoginForm onClose={() => setActiveItem('home')} />;
   }
-
-  // Reset to home if user logs out
-  useEffect(() => {
-    if (!isAuthenticated && activeItem === 'login') {
-      setActiveItem('home');
-    }
-  }, [isAuthenticated, activeItem]);
 
   const renderContent = () => {
     switch (activeItem) {
