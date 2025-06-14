@@ -46,42 +46,28 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
     return matchesSearch && matchesBranch;
   });
 
-  const handleAddResource = (newResource: any) => {
-    const updatedData = { ...data };
-    const branch = updatedData.branches.find((b: any) => b.id === newResource.branchId);
-    if (branch) {
-      const semester = branch.semesters.find((s: any) => s.id === newResource.semesterId);
-      if (semester) {
-        const subject = semester.subjects.find((sub: any) => sub.id === newResource.subjectId);
-        if (subject) {
-          if (!subject.resources) {
-            subject.resources = [];
-          }
-          subject.resources.push(newResource);
-          onUpdate(updatedData);
-        }
-      }
+  const handleAddResource = async (newResource: any) => {
+    try {
+      await addResource(newResource.subjectId, newResource);
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+      // Show error toast...
     }
   };
 
-  const handleDeleteResource = (
+  const handleDeleteResource = async (
     resourceId: string,
     branchId: string,
     semesterId: string,
     subjectId: string
   ) => {
-    // Use deep clone to create an immutable update path
-    const updatedData = deepClone(data);
-    const branch = updatedData.branches.find((b: any) => b.id === branchId);
-    if (branch) {
-      const semester = branch.semesters.find((s: any) => s.id === semesterId);
-      if (semester) {
-        const subject = semester.subjects.find((sub: any) => sub.id === subjectId);
-        if (subject && subject.resources) {
-          subject.resources = subject.resources.filter((r: any) => r.id !== resourceId);
-          onUpdate(updatedData);
-        }
-      }
+    try {
+      await deleteResource(resourceId);
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+      // Show error toast...
     }
   };
 

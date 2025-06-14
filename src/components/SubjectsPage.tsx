@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, BookOpen, Plus, Settings, FileText, Calendar, Tag, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import SubjectCard from './SubjectCard';
 import BranchManager from './BranchManager';
 import { useAuth } from '@/contexts/AuthContext';
 import { mockSubjectsData } from '../data/mockSubjectsData';
+import { getBranchesWithSemestersAndSubjects } from "@/integrations/supabase/supabaseAcademicApi";
 
 const SubjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +17,21 @@ const SubjectsPage = () => {
   const [showCMS, setShowCMS] = useState(false);
   const [subjectsData, setSubjectsData] = useState(mockSubjectsData);
   const { canManageContent, user } = useAuth();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetch() {
+      setLoading(true);
+      try {
+        const apiData = await getBranchesWithSemestersAndSubjects();
+        setSubjectsData({ branches: apiData });
+      } catch (e) {
+        console.error(e);
+      }
+      setLoading(false);
+    }
+    fetch();
+  }, []);
 
   const filteredSubjects = subjectsData.branches.flatMap(branch => 
     branch.semesters.flatMap(semester =>
@@ -46,6 +62,10 @@ const SubjectsPage = () => {
       semester.subjects.map(subject => subject.tag)
     )
   ))];
+
+  if (loading) {
+    return <div className="text-center text-gray-400 p-10">Loading subjects from database...</div>;
+  }
 
   if (showCMS) {
     return (

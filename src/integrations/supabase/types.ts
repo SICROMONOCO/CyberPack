@@ -9,7 +9,144 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      branches: {
+        Row: {
+          brochure: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          brochure?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          brochure?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      resources: {
+        Row: {
+          author: string | null
+          created_at: string | null
+          dateadded: string | null
+          description: string | null
+          file_url: string | null
+          id: string
+          keywords: string[] | null
+          subject_id: string
+          title: string
+          type: string | null
+          url: string | null
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string | null
+          dateadded?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          keywords?: string[] | null
+          subject_id: string
+          title: string
+          type?: string | null
+          url?: string | null
+        }
+        Update: {
+          author?: string | null
+          created_at?: string | null
+          dateadded?: string | null
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          keywords?: string[] | null
+          subject_id?: string
+          title?: string
+          type?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      semesters: {
+        Row: {
+          branch_id: string
+          created_at: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "semesters_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subjects: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          semester_id: string
+          tag: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          semester_id: string
+          tag?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          semester_id?: string
+          tag?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_semester_id_fkey"
+            columns: ["semester_id"]
+            isOneToOne: false
+            referencedRelation: "semesters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
