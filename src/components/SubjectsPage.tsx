@@ -203,8 +203,8 @@ const SubjectsPage = () => {
           </h2>
         </div>
 
-        {/* Subject Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Subject Cards - Changed from grid to list */}
+        <div className="space-y-4">
           {filteredSubjects.map(subject => (
             <SubjectCard 
               key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}

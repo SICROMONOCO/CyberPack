@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type UserRole = 'student' | 'editor';
+export type UserRole = 'editor';
 
 interface User {
   id: string;
@@ -22,8 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Demo credentials - in production this would be handled by a backend
 const DEMO_CREDENTIALS = {
-  editor: { username: 'admin', password: 'admin123', role: 'editor' as UserRole },
-  student: { username: 'student', password: 'student123', role: 'student' as UserRole }
+  editor: { username: 'admin', password: 'admin123', role: 'editor' as UserRole }
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

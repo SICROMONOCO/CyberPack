@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { User, LogOut, Shield, BookOpen, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,25 +16,11 @@ const UserProfile = ({ isCollapsed = false }: UserProfileProps) => {
   if (!user) return null;
 
   const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'editor':
-        return 'bg-blue-600 text-white';
-      case 'student':
-        return 'bg-green-600 text-white';
-      default:
-        return 'bg-gray-600 text-white';
-    }
+    return 'bg-blue-600 text-white';
   };
 
   const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'editor':
-        return <Settings className="w-3 h-3" />;
-      case 'student':
-        return <BookOpen className="w-3 h-3" />;
-      default:
-        return <User className="w-3 h-3" />;
-    }
+    return <Settings className="w-3 h-3" />;
   };
 
   if (isCollapsed) {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { LogIn, Eye, EyeOff, User, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -103,7 +102,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -124,7 +123,6 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
             <h4 className="text-sm font-medium text-gray-300 mb-2">Demo Credentials:</h4>
             <div className="space-y-1 text-xs text-gray-400">
               <div><strong>Editor:</strong> admin / admin123</div>
-              <div><strong>Student:</strong> student / student123</div>
             </div>
           </div>
         </CardContent>
