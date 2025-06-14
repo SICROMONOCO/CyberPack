@@ -34,9 +34,9 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Reset to home if user logs out or is already logged in and selects login
+  // Reset to home if user is already logged in and selects login
   useEffect(() => {
-    if (!isAuthenticated && activeItem === 'login') {
+    if (isAuthenticated && activeItem === 'login') {
       setActiveItem('home');
     }
   }, [isAuthenticated, activeItem]);
