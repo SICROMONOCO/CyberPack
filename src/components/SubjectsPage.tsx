@@ -1,13 +1,30 @@
+
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, BookOpen, Plus, Settings, FileText, Calendar, Tag, Lock } from 'lucide-react';
+import { Search, BookOpen, Settings, FileText, Calendar, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
 import BranchManager from './BranchManager';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockSubjectsData } from '../data/mockSubjectsData';
 import { getBranchesWithSemestersAndSubjects } from "@/integrations/supabase/supabaseAcademicApi";
+
+export type SupabaseBranch = {
+  id: string;
+  name: string;
+  description: string;
+  brochure?: string | null;
+  semesters: {
+    id: string;
+    name: string;
+    subjects: {
+      id: string;
+      title: string;
+      description?: string;
+      tag?: string;
+    }[];
+  }[];
+};
 
 const SubjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,33 +32,36 @@ const SubjectsPage = () => {
   const [selectedSemester, setSelectedSemester] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
   const [showCMS, setShowCMS] = useState(false);
-  const [subjectsData, setSubjectsData] = useState(mockSubjectsData);
+  const [subjectsData, setSubjectsData] = useState<{ branches: SupabaseBranch[] }>({ branches: [] });
   const { canManageContent, user } = useAuth();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetch() {
-      setLoading(true);
-      try {
-        const apiData = await getBranchesWithSemestersAndSubjects();
-        setSubjectsData({ branches: apiData });
-      } catch (e) {
-        console.error(e);
-      }
-      setLoading(false);
+  // Refetch data from Supabase
+  const fetchAllFromSupabase = async () => {
+    setLoading(true);
+    try {
+      const apiData = await getBranchesWithSemestersAndSubjects();
+      setSubjectsData({ branches: apiData });
+    } catch (e) {
+      setSubjectsData({ branches: [] });
+      console.error(e);
     }
-    fetch();
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchAllFromSupabase();
   }, []);
 
-  const filteredSubjects = subjectsData.branches.flatMap(branch => 
+  // These flatMaps are safe on live data
+  const filteredSubjects = subjectsData.branches.flatMap(branch =>
     branch.semesters.flatMap(semester =>
       semester.subjects.filter(subject => {
         const matchesSearch = subject.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            subject.description.toLowerCase().includes(searchTerm.toLowerCase());
+          (subject.description?.toLowerCase() || '').includes(searchTerm.toLowerCase());
         const matchesBranch = selectedBranch === 'all' || branch.id === selectedBranch;
         const matchesSemester = selectedSemester === 'all' || semester.id === selectedSemester;
         const matchesTag = selectedTag === 'all' || subject.tag === selectedTag;
-        
         return matchesSearch && matchesBranch && matchesSemester && matchesTag;
       }).map(subject => ({
         ...subject,
@@ -53,15 +73,19 @@ const SubjectsPage = () => {
     )
   );
 
-  const allSemesters = subjectsData.branches.flatMap(branch => 
+  const allSemesters = subjectsData.branches.flatMap(branch =>
     branch.semesters.map(semester => ({ ...semester, branchName: branch.name }))
   );
 
-  const allTags = [...new Set(subjectsData.branches.flatMap(branch => 
-    branch.semesters.flatMap(semester => 
-      semester.subjects.map(subject => subject.tag)
-    )
-  ))];
+  const allTags = [
+    ...new Set(
+      subjectsData.branches.flatMap(branch =>
+        branch.semesters.flatMap(semester =>
+          semester.subjects.map(subject => subject.tag).filter(Boolean)
+        )
+      )
+    ),
+  ].filter(Boolean);
 
   if (loading) {
     return <div className="text-center text-gray-400 p-10">Loading subjects from database...</div>;
@@ -69,10 +93,13 @@ const SubjectsPage = () => {
 
   if (showCMS) {
     return (
-      <BranchManager 
-        data={subjectsData} 
-        onUpdate={setSubjectsData}
-        onClose={() => setShowCMS(false)}
+      <BranchManager
+        data={subjectsData}
+        onUpdate={() => fetchAllFromSupabase()}
+        onClose={() => {
+          setShowCMS(false);
+          fetchAllFromSupabase();
+        }}
       />
     );
   }
@@ -111,7 +138,7 @@ const SubjectsPage = () => {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-300">
-                    Signed in as <span className="font-medium text-white">{user.username}</span> 
+                    Signed in as <span className="font-medium text-white">{user.username}</span>
                     <span className="ml-2 px-2 py-1 rounded text-xs bg-blue-600 text-white">
                       {user.role}
                     </span>
@@ -204,50 +231,26 @@ const SubjectsPage = () => {
                     <BookOpen className="w-4 h-4" />
                     {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
                   </div>
-                  {/* Handle brochure as string (Supabase) or object (mock) */}
-                  {branch.brochure && (
-                    typeof branch.brochure === "string" ? (
-                      <div className="flex items-center gap-2 mt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="mt-2"
+                  {/* Supabase: brochure is string or null. Show if set */}
+                  {branch.brochure && typeof branch.brochure === "string" && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="mt-2"
+                      >
+                        <a
+                          href={branch.brochure}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
                         >
-                          <a
-                            href={branch.brochure}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2"
-                          >
-                            <FileText className="w-4 h-4" />
-                            View Brochure
-                          </a>
-                        </Button>
-                      </div>
-                    ) : typeof branch.brochure === "object" && branch.brochure.filename ? (
-                      <div className="flex items-center gap-2 mt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="mt-2"
-                        >
-                          <a
-                            href={`/assets/${branch.brochure.filename}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2"
-                          >
-                            <FileText className="w-4 h-4" />
-                            View Brochure
-                          </a>
-                        </Button>
-                        <span className="text-xs text-gray-500 ml-2">
-                          ({branch.brochure.size || "Unknown size"})
-                        </span>
-                      </div>
-                    ) : null
+                          <FileText className="w-4 h-4" />
+                          View Brochure
+                        </a>
+                      </Button>
+                    </div>
                   )}
                 </div>
               </CardContent>
@@ -262,10 +265,10 @@ const SubjectsPage = () => {
           </h2>
         </div>
 
-        {/* Subject Cards - Changed from grid to list */}
+        {/* Subject Cards */}
         <div className="space-y-4">
           {filteredSubjects.map(subject => (
-            <SubjectCard 
+            <SubjectCard
               key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
               subject={subject}
             />

@@ -46,14 +46,11 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
           brochure: undefined,
         });
         toast({ title: "Branch added", description: `Branch "${newBranch.name}" was created.`, duration: 2500 });
-        onUpdate({ branches: [...data.branches, newBranch] });
+        onUpdate(); // trigger SubjectPage to refetch
       } else {
         const updated = await updateBranch(editingBranch, formData);
         toast({ title: "Branch updated", description: `Branch "${updated.name}" was updated.`, duration: 2500 });
-        const branches = data.branches.map((b: any) =>
-          b.id === editingBranch ? updated : b
-        );
-        onUpdate({ branches });
+        onUpdate();
       }
     } catch (e) {
       toast({ title: "ERROR", description: String(e) });
@@ -65,9 +62,8 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
   const handleDeleteBranch = async (branchId: string) => {
     try {
       await deleteBranch(branchId);
-      const deletedBranch = data.branches.find((b: any) => b.id === branchId);
-      onUpdate({ branches: data.branches.filter((b: any) => b.id !== branchId) });
-      toast({ title: "Branch deleted", description: deletedBranch ? `"${deletedBranch.name}" was deleted.` : "Branch deleted.", duration: 2500 });
+      toast({ title: "Branch deleted", description: `Branch was deleted.`, duration: 2500 });
+      onUpdate();
     } catch (e) {
       toast({ title: "Error deleting branch", description: String(e) });
     }
@@ -77,23 +73,18 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
     try {
       const branch = data.branches.find((b: any) => b.id === branchId);
       const newSemester = await addSemester(branchId, `Semester ${branch.semesters.length + 1}`);
-      // Update state from DB OR for now, update local (refetching recommended in prod)
       toast({ title: "Semester added", description: `Added ${newSemester.name} to ${branch.name}` });
-      // refetch data for simplicity
-      window.location.reload();
+      onUpdate(); // refetch data
     } catch (e) {
       toast({ title: "Error adding semester", description: String(e) });
     }
   };
 
-  // Subject update for a given semester inside a branch
   const handleUpdateSubjects = async (branchId: string, semesterId: string, newSubjects: any[]) => {
-    // TODO: update each subject accordingly; outside this scope now—should use API and reload.
-    // For now, reload to re-fetch everything. For better UX, implement CRUD for subjects in SubjectManager.
-    window.location.reload();
+    // This should be replaced with actual CRUD but this forces a refresh (for now)
+    onUpdate();
   };
 
-  // Brochure link management
   const handleSaveBrochureLink = (branchId: string) => {
     if (!/^https?:\/\//.test(brochureLinkInput.trim())) {
       toast({ title: "Invalid Link", description: "Please enter a valid URL beginning with http or https." });
