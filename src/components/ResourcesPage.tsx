@@ -180,7 +180,7 @@ const ResourcesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen">
       <div className="container mx-auto p-6 space-y-6">
         <ResourceHeader canManageContent={canManageContent} onManageClick={() => setShowManager(true)} />
 

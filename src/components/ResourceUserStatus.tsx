@@ -11,11 +11,11 @@ const ResourceUserStatus = () => {
   }
 
   return (
-    <Card className="bg-gray-800 border-gray-700">
+    <Card className="bg-secondary border-border">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-300">
-            Signed in as <span className="font-medium text-white">{user.username}</span>
+          <div className="text-sm text-muted-foreground">
+            Signed in as <span className="font-medium text-foreground">{user.username}</span>
             <span className="ml-2 px-2 py-1 rounded text-xs bg-blue-600 text-white">
               {user.role}
             </span>
