@@ -1,11 +1,11 @@
-
 import React, { useState } from 'react';
-import { Search, Filter, BookOpen, Plus, Settings, FileText, Calendar, Tag } from 'lucide-react';
+import { Search, Filter, BookOpen, Plus, Settings, FileText, Calendar, Tag, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
 import BranchManager from './BranchManager';
+import { useAuth } from '@/contexts/AuthContext';
 import { mockSubjectsData } from '../data/mockSubjectsData';
 
 const SubjectsPage = () => {
@@ -15,6 +15,7 @@ const SubjectsPage = () => {
   const [selectedTag, setSelectedTag] = useState('all');
   const [showCMS, setShowCMS] = useState(false);
   const [subjectsData, setSubjectsData] = useState(mockSubjectsData);
+  const { canManageContent, user } = useAuth();
 
   const filteredSubjects = subjectsData.branches.flatMap(branch => 
     branch.semesters.flatMap(semester =>
@@ -67,14 +68,44 @@ const SubjectsPage = () => {
             </h1>
             <p className="text-gray-400">Explore courses organized by academic branches and semesters</p>
           </div>
-          <Button
-            onClick={() => setShowCMS(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Manage Content
-          </Button>
+          {canManageContent ? (
+            <Button
+              onClick={() => setShowCMS(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Content
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-500">
+              <Lock className="w-4 h-4" />
+              <span className="text-sm">Editor access required</span>
+            </div>
+          )}
         </div>
+
+        {/* User Role Info */}
+        {user && (
+          <div className="mb-6">
+            <Card className="bg-gray-800 border-gray-700">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-300">
+                    Signed in as <span className="font-medium text-white">{user.username}</span> 
+                    <span className="ml-2 px-2 py-1 rounded text-xs bg-blue-600 text-white">
+                      {user.role}
+                    </span>
+                  </div>
+                  {canManageContent && (
+                    <div className="text-xs text-green-400">
+                      ✓ Content management enabled
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Filters and Search */}
         <div className="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800">

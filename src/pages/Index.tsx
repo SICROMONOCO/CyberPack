@@ -8,10 +8,13 @@ import SubjectsPage from '@/components/SubjectsPage';
 import ResourcesPage from '@/components/ResourcesPage';
 import SupportPage from '@/components/SupportPage';
 import AboutPage from '@/components/AboutPage';
+import LoginForm from '@/components/LoginForm';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState('home');
+  const { isAuthenticated } = useAuth();
 
   // Handle mobile responsiveness
   useEffect(() => {
@@ -42,6 +45,18 @@ const Index = () => {
       setIsCollapsed(true);
     }
   };
+
+  // Show login form if login is selected and user is not authenticated
+  if (activeItem === 'login' && !isAuthenticated) {
+    return <LoginForm onClose={() => setActiveItem('home')} />;
+  }
+
+  // Reset to home if user logs out
+  useEffect(() => {
+    if (!isAuthenticated && activeItem === 'login') {
+      setActiveItem('home');
+    }
+  }, [isAuthenticated, activeItem]);
 
   const renderContent = () => {
     switch (activeItem) {

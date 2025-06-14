@@ -1,6 +1,5 @@
-
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Plus, Settings, Download, Upload, Calendar, User, Tag, Globe } from 'lucide-react';
+import { Search, Filter, Plus, Settings, Download, Upload, Calendar, User, Tag, Globe, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ResourceCard from './ResourceCard';
 import ResourceManager from './ResourceManager';
+import { useAuth } from '@/contexts/AuthContext';
 import { mockResourcesData, type Branch, type Resource } from '@/data/mockResourcesData';
 
 const ResourcesPage = () => {
@@ -21,6 +21,7 @@ const ResourcesPage = () => {
   const [filterType, setFilterType] = useState<string>('all');
   const [showManager, setShowManager] = useState(false);
   const [resourcesData, setResourcesData] = useState(mockResourcesData);
+  const { canManageContent, user } = useAuth();
 
   // Get all available options for filters
   const branches = resourcesData;
@@ -177,14 +178,42 @@ const ResourcesPage = () => {
               Access study materials, documents, and learning resources organized by subject
             </p>
           </div>
-          <Button
-            onClick={() => setShowManager(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Manage Resources
-          </Button>
+          {canManageContent ? (
+            <Button
+              onClick={() => setShowManager(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Resources
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-500">
+              <Lock className="w-4 h-4" />
+              <span className="text-sm">Editor access required</span>
+            </div>
+          )}
         </div>
+
+        {/* User Role Info */}
+        {user && (
+          <Card className="bg-gray-800 border-gray-700">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-300">
+                  Signed in as <span className="font-medium text-white">{user.username}</span> 
+                  <span className="ml-2 px-2 py-1 rounded text-xs bg-blue-600 text-white">
+                    {user.role}
+                  </span>
+                </div>
+                {canManageContent && (
+                  <div className="text-xs text-green-400">
+                    ✓ Resource management enabled
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

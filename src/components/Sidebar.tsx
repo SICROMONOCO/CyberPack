@@ -1,7 +1,10 @@
 
 import React from 'react';
-import { Home, BookOpen, FolderOpen, HelpCircle, Info, Menu, X } from 'lucide-react';
+import { Home, BookOpen, FolderOpen, HelpCircle, Info, Menu, X, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import UserProfile from './UserProfile';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -11,6 +14,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isCollapsed, onToggle, activeItem, onItemClick }: SidebarProps) => {
+  const { isAuthenticated } = useAuth();
+  
   const menuItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'subjects', label: 'Subjects', icon: BookOpen },
@@ -18,6 +23,10 @@ const Sidebar = ({ isCollapsed, onToggle, activeItem, onItemClick }: SidebarProp
     { id: 'support', label: 'Support', icon: HelpCircle },
     { id: 'about', label: 'About Us', icon: Info },
   ];
+
+  const handleLoginClick = () => {
+    onItemClick('login');
+  };
 
   return (
     <>
@@ -54,8 +63,42 @@ const Sidebar = ({ isCollapsed, onToggle, activeItem, onItemClick }: SidebarProp
           </button>
         </div>
 
+        {/* User Profile / Login */}
+        <div className="p-4 border-b border-gray-700">
+          {isAuthenticated ? (
+            <UserProfile isCollapsed={isCollapsed} />
+          ) : (
+            <div className="space-y-2">
+              {!isCollapsed ? (
+                <Button
+                  onClick={handleLoginClick}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  size="sm"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In
+                </Button>
+              ) : (
+                <div className="relative group">
+                  <Button
+                    onClick={handleLoginClick}
+                    variant="ghost"
+                    size="sm"
+                    className="w-full p-2 text-gray-300 hover:text-white hover:bg-gray-800"
+                  >
+                    <LogIn className="w-4 h-4" />
+                  </Button>
+                  <div className="absolute left-full ml-3 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 border border-gray-700">
+                    Sign In
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Navigation */}
-        <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-80px)]">
+        <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-200px)]">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeItem === item.id;
