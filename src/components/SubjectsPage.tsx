@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, BookOpen, Settings, FileText, Calendar, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +21,7 @@ export type SupabaseBranch = {
       title: string;
       description?: string;
       tag?: string;
+      creditHours?: number;
     }[];
   }[];
 };
@@ -68,7 +68,13 @@ const SubjectsPage = () => {
         branchName: branch.name,
         semesterName: semester.name,
         branchId: branch.id,
-        semesterId: semester.id
+        semesterId: semester.id,
+        creditHours: (typeof subject.creditHours === "number" ? subject.creditHours : 3), // fallback
+        tag: subject.tag ?? "",
+        description: subject.description ?? "",
+        code: subject.code ?? "",
+        prerequisites: subject.prerequisites ?? [],
+        instructor: subject.instructor ?? "",
       }))
     )
   );

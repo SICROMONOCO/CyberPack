@@ -46,7 +46,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
           brochure: undefined,
         });
         toast({ title: "Branch added", description: `Branch "${newBranch.name}" was created.`, duration: 2500 });
-        onUpdate(); // trigger SubjectPage to refetch
+        onUpdate();
       } else {
         const updated = await updateBranch(editingBranch, formData);
         toast({ title: "Branch updated", description: `Branch "${updated.name}" was updated.`, duration: 2500 });
@@ -74,14 +74,13 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
       const branch = data.branches.find((b: any) => b.id === branchId);
       const newSemester = await addSemester(branchId, `Semester ${branch.semesters.length + 1}`);
       toast({ title: "Semester added", description: `Added ${newSemester.name} to ${branch.name}` });
-      onUpdate(); // refetch data
+      onUpdate();
     } catch (e) {
       toast({ title: "Error adding semester", description: String(e) });
     }
   };
 
   const handleUpdateSubjects = async (branchId: string, semesterId: string, newSubjects: any[]) => {
-    // This should be replaced with actual CRUD but this forces a refresh (for now)
     onUpdate();
   };
 
@@ -95,7 +94,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
     if (branchIndex !== -1) {
       updatedData.branches[branchIndex].brochure = brochureLinkInput.trim();
     }
-    onUpdate(updatedData);
+    onUpdate();
     setEditingBrochureBranch(null);
     setBrochureLinkInput('');
     toast({ title: 'Brochure Linked', description: 'Brochure link saved for branch.' });
@@ -107,7 +106,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
     if (branchIndex !== -1) {
       updatedData.branches[branchIndex].brochure = undefined;
     }
-    onUpdate(updatedData);
+    onUpdate();
     toast({ title: 'Brochure Removed', description: 'Brochure link removed for branch.' });
   };
 
