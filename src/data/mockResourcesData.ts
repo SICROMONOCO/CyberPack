@@ -39,7 +39,6 @@ export interface Branch {
   description: string;
   icon: string;
   semesters: Semester[];
-  brochure?: string; // <- Added optional brochure property
 }
 
 export const mockResourcesData: Branch[] = [
@@ -48,7 +47,6 @@ export const mockResourcesData: Branch[] = [
     name: 'Cybersecurity Branch',
     description: 'Comprehensive cybersecurity education covering network security, ethical hacking, and digital forensics.',
     icon: '🔒',
-    brochure: undefined, // Example (optional: can provide a brochure link here if desired)
     semesters: [
       {
         id: 'semester-1',
