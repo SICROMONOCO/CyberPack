@@ -19,7 +19,7 @@ import {
 
 interface BranchManagerProps {
   data: any;
-  onUpdate: (data: any) => void;
+  onUpdate: () => void;
   onClose: () => void;
 }
 
@@ -84,30 +84,30 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
     onUpdate();
   };
 
-  const handleSaveBrochureLink = (branchId: string) => {
+  const handleSaveBrochureLink = async (branchId: string) => {
     if (!/^https?:\/\//.test(brochureLinkInput.trim())) {
       toast({ title: "Invalid Link", description: "Please enter a valid URL beginning with http or https." });
       return;
     }
-    const updatedData = deepClone(data);
-    const branchIndex = updatedData.branches.findIndex((b: any) => b.id === branchId);
-    if (branchIndex !== -1) {
-      updatedData.branches[branchIndex].brochure = brochureLinkInput.trim();
+    try {
+      await updateBranch(branchId, { brochure: brochureLinkInput.trim() });
+      onUpdate();
+      setEditingBrochureBranch(null);
+      setBrochureLinkInput('');
+      toast({ title: 'Brochure Linked', description: 'Brochure link saved for branch.' });
+    } catch (e) {
+      toast({ title: "Error saving brochure", description: String(e) });
     }
-    onUpdate();
-    setEditingBrochureBranch(null);
-    setBrochureLinkInput('');
-    toast({ title: 'Brochure Linked', description: 'Brochure link saved for branch.' });
   };
 
-  const handleRemoveBrochureLink = (branchId: string) => {
-    const updatedData = deepClone(data);
-    const branchIndex = updatedData.branches.findIndex((b: any) => b.id === branchId);
-    if (branchIndex !== -1) {
-      updatedData.branches[branchIndex].brochure = undefined;
+  const handleRemoveBrochureLink = async (branchId: string) => {
+    try {
+      await updateBranch(branchId, { brochure: null });
+      onUpdate();
+      toast({ title: 'Brochure Removed', description: 'Brochure link removed for branch.' });
+    } catch (e) {
+      toast({ title: "Error removing brochure", description: String(e) });
     }
-    onUpdate();
-    toast({ title: 'Brochure Removed', description: 'Brochure link removed for branch.' });
   };
 
   const renderBranchManager = () => (
@@ -227,7 +227,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
                   Add Semester
                 </Button>
               </div>
-              {/* Show semesters and their subjects */}
               {branch.semesters.map((semester: any) => (
                 <div key={semester.id} className="mt-4">
                   <Card className="bg-gray-950 border-gray-800 mb-2">
@@ -257,12 +256,10 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
     </div>
   );
 
-  // Brochure link management + list layout
   const renderBrochureManager = () => (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-white">Brochure Management</h2>
       <p className="text-gray-400 mb-4">Upload and manage program brochure links for each academic branch.</p>
-      {/* LIST layout: not grid, but vertical list */}
       <div className="flex flex-col gap-4">
         {data.branches.length === 0 && (
           <div className="text-gray-400 italic text-sm">No branches found yet.</div>
@@ -292,7 +289,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
               )}
             </div>
             <div className="flex flex-col md:flex-row items-start md:items-center gap-2 mt-2 md:mt-0">
-              {/* Link editor */}
               {editingBrochureBranch === branch.id ? (
                 <div className="flex gap-2 items-center">
                   <Input
@@ -357,7 +353,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
             onClick={onClose}
@@ -371,7 +366,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
             Content Management System
           </h1>
         </div>
-        {/* Navigation Tabs */}
         <div className="flex gap-2 mb-8">
           <Button
             onClick={() => setActiveTab('branches')}
@@ -387,9 +381,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
           >
             Program Brochures
           </Button>
-          {/* Removed Subject Management tab */}
         </div>
-        {/* Content */}
         {activeTab === 'branches' && renderBranchManager()}
         {activeTab === 'brochures' && renderBrochureManager()}
       </div>

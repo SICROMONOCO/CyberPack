@@ -22,6 +22,9 @@ export type SupabaseBranch = {
       description?: string;
       tag?: string;
       creditHours?: number;
+      code?: string;
+      prerequisites?: string[];
+      instructor?: string;
     }[];
   }[];
 };
