@@ -4,8 +4,8 @@ import { ArrowLeft, Plus, Edit2, Trash2, Save, X, Upload, FileText, Calendar, Bo
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
+import SubjectManager from './SubjectManager';
 
 interface BranchManagerProps {
   data: any;
@@ -16,8 +16,8 @@ interface BranchManagerProps {
 const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
   const [activeTab, setActiveTab] = useState('branches');
   const [editingBranch, setEditingBranch] = useState<string | null>(null);
-  const [editingSubject, setEditingSubject] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
+  const [managingSemester, setManagingSemester] = useState<{ branchId: string, semesterId: string } | null>(null);
   const { toast } = useToast();
 
   // DEEP CLONE UTILITY
@@ -72,6 +72,19 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
       onUpdate(updatedData);
       toast({ title: 'Semester added', description: `Added ${newSemester.name} to ${updatedData.branches[branchIndex].name}`, duration: 2500 });
     }
+  };
+
+  // Subject update for a given semester inside a branch
+  const handleUpdateSubjects = (branchId: string, semesterId: string, newSubjects: any[]) => {
+    const updatedData = deepClone(data);
+    const branchIdx = updatedData.branches.findIndex((b: any) => b.id === branchId);
+    if (branchIdx === -1) return;
+    const semesterIdx = updatedData.branches[branchIdx].semesters.findIndex(
+      (s: any) => s.id === semesterId
+    );
+    if (semesterIdx === -1) return;
+    updatedData.branches[branchIdx].semesters[semesterIdx].subjects = newSubjects;
+    onUpdate(updatedData);
   };
 
   const renderBranchManager = () => (
@@ -191,6 +204,30 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
                   Add Semester
                 </Button>
               </div>
+              {/* Show semesters and their subjects */}
+              {branch.semesters.map((semester: any) => (
+                <div key={semester.id} className="mt-4">
+                  <Card className="bg-gray-950 border-gray-800 mb-2">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-white text-base">
+                          {semester.name}
+                        </CardTitle>
+                        {/* (Optional) Semester editing/deleting could go here in future */}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <SubjectManager
+                        subjects={semester.subjects}
+                        onUpdate={(updatedSubjects) =>
+                          handleUpdateSubjects(branch.id, semester.id, updatedSubjects)
+                        }
+                        semesterName={semester.name}
+                      />
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
             </CardContent>
           </Card>
         ))}
@@ -215,7 +252,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
             Content Management System
           </h1>
         </div>
-
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-8">
           <Button
@@ -240,7 +276,6 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
             Subject Management
           </Button>
         </div>
-
         {/* Content */}
         {activeTab === 'branches' && renderBranchManager()}
         {activeTab === 'brochures' && (
@@ -263,4 +298,3 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
 };
 
 export default BranchManager;
-
