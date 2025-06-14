@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Edit2, Trash2, Upload, FolderOpen, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ResourceUploadModal from './ResourceUploadModal';
 import ResourceCard from './ResourceCard';
-import { addResource, deleteResource } from "@/integrations/supabase/supabaseAcademicApi";
+import { addResource, deleteResource, getResourcesForSubject } from "@/integrations/supabase/supabaseAcademicApi";
 
 interface ResourceManagerProps {
   data: any;
@@ -18,42 +19,86 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const [allResources, setAllResources] = useState<any[]>([]);
+  const [deleteLoadingIds, setDeleteLoadingIds] = useState<Set<string>>(new Set());
 
-  // DEEP CLONE UTILITY
-  function deepClone(obj: any) {
-    return JSON.parse(JSON.stringify(obj));
-  }
+  // Fetch all resources for all subjects
+  useEffect(() => {
+    async function fetchAllResources() {
+      setLoading(true);
+      try {
+        const collected: any[] = [];
+        for (const branch of data.branches) {
+          for (const semester of branch.semesters) {
+            for (const subject of semester.subjects) {
+              const resources = await getResourcesForSubject(subject.id);
+              for (const resource of resources) {
+                collected.push({
+                  ...resource,
+                  branchName: branch.name,
+                  branchId: branch.id,
+                  semesterName: semester.name,
+                  semesterId: semester.id,
+                  subjectName: subject.title,
+                  subjectId: subject.id,
+                });
+              }
+            }
+          }
+        }
+        setAllResources(collected);
+      } catch (e) {
+        console.error("Error fetching resources", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchAllResources();
+  }, [data]);
 
-  // Get all resources with context
-  const allResources = data.branches.flatMap((branch: any) =>
-    branch.semesters.flatMap((semester: any) =>
-      semester.subjects.flatMap((subject: any) =>
-        (subject.resources || []).map((resource: any) => ({
-          ...resource,
-          branchName: branch.name,
-          branchId: branch.id,
-          semesterName: semester.name,
-          semesterId: semester.id,
-          subjectName: subject.title,
-          subjectId: subject.id
-        }))
-      )
-    )
-  );
-
-  const filteredResources = allResources.filter((resource: any) => {
-    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredResources = allResources.filter((resource) => {
+    const matchesSearch = resource.title?.toLowerCase().includes(searchTerm.toLowerCase() || "");
     const matchesBranch = selectedBranch === 'all' || resource.branchId === selectedBranch;
     return matchesSearch && matchesBranch;
   });
 
+  const refreshResources = async () => {
+    setLoading(true);
+    try {
+      const collected: any[] = [];
+      for (const branch of data.branches) {
+        for (const semester of branch.semesters) {
+          for (const subject of semester.subjects) {
+            const resources = await getResourcesForSubject(subject.id);
+            for (const resource of resources) {
+              collected.push({
+                ...resource,
+                branchName: branch.name,
+                branchId: branch.id,
+                semesterName: semester.name,
+                semesterId: semester.id,
+                subjectName: subject.title,
+                subjectId: subject.id,
+              });
+            }
+          }
+        }
+      }
+      setAllResources(collected);
+    } catch (e) {
+      console.error("Error refreshing resources", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAddResource = async (newResource: any) => {
     try {
       await addResource(newResource.subjectId, newResource);
-      window.location.reload();
+      await refreshResources();
     } catch (e) {
-      console.error(e);
-      // Show error toast...
+      console.error("Failed to add resource", e);
     }
   };
 
@@ -63,12 +108,18 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
     semesterId: string,
     subjectId: string
   ) => {
+    setDeleteLoadingIds((prev) => new Set([...prev, resourceId]));
     try {
       await deleteResource(resourceId);
-      window.location.reload();
+      await refreshResources();
     } catch (e) {
-      console.error(e);
-      // Show error toast...
+      console.error("Failed to delete resource", e);
+    } finally {
+      setDeleteLoadingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(resourceId);
+        return next;
+      });
     }
   };
 
@@ -188,6 +239,7 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
                 size="sm"
                 variant="outline"
                 className="border-yellow-600 text-yellow-400 hover:bg-yellow-600 h-8 w-8 p-0"
+                // TODO: Implement edit
               >
                 <Edit2 className="w-3 h-3" />
               </Button>
@@ -195,7 +247,8 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
                 onClick={() => handleDeleteResource(resource.id, resource.branchId, resource.semesterId, resource.subjectId)}
                 size="sm"
                 variant="outline"
-                className="border-red-600 text-red-400 hover:bg-red-600 h-8 w-8 p-0"
+                className={`border-red-600 text-red-400 hover:bg-red-600 h-8 w-8 p-0 ${deleteLoadingIds.has(resource.id) ? "opacity-50 pointer-events-none" : ""}`}
+                disabled={deleteLoadingIds.has(resource.id)}
               >
                 <Trash2 className="w-3 h-3" />
               </Button>
@@ -207,12 +260,15 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
         ))}
       </div>
 
-      {filteredResources.length === 0 && (
+      {filteredResources.length === 0 && !loading && (
         <div className="text-center py-12">
           <FolderOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-400 mb-2">No resources found</h3>
           <p className="text-gray-500">Try adjusting your search terms or add new resources</p>
         </div>
+      )}
+      {loading && (
+        <div className="text-center py-6 text-gray-400">Loading resources...</div>
       )}
     </div>
   );
@@ -234,7 +290,6 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
             Resource Management System
           </h1>
         </div>
-
         {/* Navigation Tabs */}
         <div className="flex gap-2 mb-8">
           <Button

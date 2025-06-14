@@ -204,26 +204,50 @@ const SubjectsPage = () => {
                     <BookOpen className="w-4 h-4" />
                     {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
                   </div>
+                  {/* Handle brochure as string (Supabase) or object (mock) */}
                   {branch.brochure && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="mt-2"
-                      >
-                        <a
-                          href={branch.brochure}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
+                    typeof branch.brochure === "string" ? (
+                      <div className="flex items-center gap-2 mt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="mt-2"
                         >
-                          <FileText className="w-4 h-4" />
-                          View Brochure
-                        </a>
-                      </Button>
-                      {/* Optionally, display 'PDF', or leave out all file-specific fields */}
-                    </div>
+                          <a
+                            href={branch.brochure}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2"
+                          >
+                            <FileText className="w-4 h-4" />
+                            View Brochure
+                          </a>
+                        </Button>
+                      </div>
+                    ) : typeof branch.brochure === "object" && branch.brochure.filename ? (
+                      <div className="flex items-center gap-2 mt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                          className="mt-2"
+                        >
+                          <a
+                            href={`/assets/${branch.brochure.filename}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2"
+                          >
+                            <FileText className="w-4 h-4" />
+                            View Brochure
+                          </a>
+                        </Button>
+                        <span className="text-xs text-gray-500 ml-2">
+                          ({branch.brochure.size || "Unknown size"})
+                        </span>
+                      </div>
+                    ) : null
                   )}
                 </div>
               </CardContent>
