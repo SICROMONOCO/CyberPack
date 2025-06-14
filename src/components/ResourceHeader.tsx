@@ -11,10 +11,10 @@ interface ResourceHeaderProps {
 const ResourceHeader = ({ canManageContent, onManageClick }: ResourceHeaderProps) => (
   <div className="flex items-center justify-between">
     <div>
-      <h1 className="text-4xl font-bold text-white">
+      <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
         Resources Library
       </h1>
-      <p className="text-gray-400 mt-2">
+      <p className="text-gray-300 mt-2">
         Access study materials, documents, and learning resources organized by subject
       </p>
     </div>

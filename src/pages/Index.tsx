@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -75,7 +76,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex overflow-hidden">
+    <div className="min-h-screen bg-gray-950 flex overflow-hidden">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={handleToggle}

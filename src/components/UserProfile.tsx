@@ -1,8 +1,8 @@
 
-import React from 'react';
-import { User, LogOut, Shield, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, LogOut, Shield, BookOpen, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -12,15 +12,31 @@ interface UserProfileProps {
 
 const UserProfile = ({ isCollapsed = false }: UserProfileProps) => {
   const { user, logout, canManageContent } = useAuth();
+  const [showDetails, setShowDetails] = useState(false);
 
   if (!user) return null;
 
-  const roleDisplay = (
-    <Badge className="bg-blue-600 text-white text-xs flex items-center gap-1 w-fit">
-      <Settings className="w-3 h-3" />
-      {user.role}
-    </Badge>
-  );
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'editor':
+        return 'bg-blue-600 text-white';
+      case 'student':
+        return 'bg-green-600 text-white';
+      default:
+        return 'bg-gray-600 text-white';
+    }
+  };
+
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'editor':
+        return <Settings className="w-3 h-3" />;
+      case 'student':
+        return <BookOpen className="w-3 h-3" />;
+      default:
+        return <User className="w-3 h-3" />;
+    }
+  };
 
   if (isCollapsed) {
     return (
@@ -29,6 +45,7 @@ const UserProfile = ({ isCollapsed = false }: UserProfileProps) => {
           variant="ghost"
           size="sm"
           className="w-full p-2 text-gray-300 hover:text-white hover:bg-gray-800"
+          onClick={() => setShowDetails(!showDetails)}
         >
           <User className="w-4 h-4" />
         </Button>
@@ -47,14 +64,17 @@ const UserProfile = ({ isCollapsed = false }: UserProfileProps) => {
         <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-gray-300" />
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">
                   {user.username}
                 </p>
-                {roleDisplay}
+                <Badge className={`text-xs ${getRoleColor(user.role)} flex items-center gap-1 w-fit`}>
+                  {getRoleIcon(user.role)}
+                  {user.role}
+                </Badge>
               </div>
             </div>
             <Button
