@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, Plus, Edit2, Trash2, Upload, FolderOpen, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,11 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('all');
+
+  // DEEP CLONE UTILITY
+  function deepClone(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+  }
 
   // Get all resources with context
   const allResources = data.branches.flatMap((branch: any) =>
@@ -60,8 +64,14 @@ const ResourceManager = ({ data, onUpdate, onClose }: ResourceManagerProps) => {
     }
   };
 
-  const handleDeleteResource = (resourceId: string, branchId: string, semesterId: string, subjectId: string) => {
-    const updatedData = { ...data };
+  const handleDeleteResource = (
+    resourceId: string,
+    branchId: string,
+    semesterId: string,
+    subjectId: string
+  ) => {
+    // Use deep clone to create an immutable update path
+    const updatedData = deepClone(data);
     const branch = updatedData.branches.find((b: any) => b.id === branchId);
     if (branch) {
       const semester = branch.semesters.find((s: any) => s.id === semesterId);
