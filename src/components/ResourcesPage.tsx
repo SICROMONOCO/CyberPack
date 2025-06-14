@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
+
+import React, { useState, useEffect, useMemo } from 'react';
 import ResourceManager from './ResourceManager';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockResourcesData, type Resource } from '@/data/mockResourcesData';
 import ResourceHeader from './ResourceHeader';
 import ResourceUserStatus from './ResourceUserStatus';
 import ResourceStats from './ResourceStats';
 import ResourceFilters from './ResourceFilters';
 import ResourceList from './ResourceList';
-import ResourceCard from './ResourceCard';
+import { getBranchesWithSemestersAndSubjects, getResourcesForSubject } from '@/integrations/supabase/supabaseAcademicApi';
 
 const ResourcesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,69 +18,118 @@ const ResourcesPage = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<string>('all');
   const [showManager, setShowManager] = useState(false);
-  const [resourcesData, setResourcesData] = useState(mockResourcesData);
+  const [branchesData, setBranchesData] = useState<any[]>([]);
+  const [allResources, setAllResources] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const { canManageContent, user } = useAuth();
 
+  // Fetch all branches, semesters, subjects from Supabase
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const branches = await getBranchesWithSemestersAndSubjects();
+        setBranchesData(branches);
+
+        // Now fetch all resources for every subject
+        const resourcePromises: Promise<any[]>[] = [];
+        branches.forEach(branch =>
+          branch.semesters.forEach(semester =>
+            semester.subjects.forEach((subject: any) => {
+              resourcePromises.push(
+                getResourcesForSubject(subject.id).then(resources =>
+                  resources.map(resource => ({
+                    ...resource,
+                    branchName: branch.name,
+                    branchId: branch.id,
+                    semesterName: semester.name,
+                    semesterId: semester.id,
+                    subjectName: subject.title,
+                    subjectId: subject.id
+                  }))
+                )
+              );
+            })
+          )
+        );
+        const resourcesBySubject = await Promise.all(resourcePromises);
+        setAllResources(resourcesBySubject.flat());
+      } catch (e) {
+        console.error('[ResourcePage] Failed to fetch data:', e);
+        setBranchesData([]);
+        setAllResources([]);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
+  // Refetch resources after management
+  const handleUpdateData = () => {
+    setLoading(true);
+    // Just re-run the same fetching as above
+    (async () => {
+      try {
+        const branches = await getBranchesWithSemestersAndSubjects();
+        setBranchesData(branches);
+
+        const resourcePromises: Promise<any[]>[] = [];
+        branches.forEach(branch =>
+          branch.semesters.forEach(semester =>
+            semester.subjects.forEach((subject: any) => {
+              resourcePromises.push(
+                getResourcesForSubject(subject.id).then(resources =>
+                  resources.map(resource => ({
+                    ...resource,
+                    branchName: branch.name,
+                    branchId: branch.id,
+                    semesterName: semester.name,
+                    semesterId: semester.id,
+                    subjectName: subject.title,
+                    subjectId: subject.id
+                  }))
+                )
+              );
+            })
+          )
+        );
+        const resourcesBySubject = await Promise.all(resourcePromises);
+        setAllResources(resourcesBySubject.flat());
+      } catch (e) {
+        setBranchesData([]);
+        setAllResources([]);
+      }
+      setLoading(false);
+    })();
+  };
+
   // Get all available options for filters
-  const branches = resourcesData;
+  const branches = branchesData || [];
   const semesters = useMemo(() => {
     if (selectedBranch === 'all') return [];
-    const branch = branches.find(b => b.id === selectedBranch);
+    const branch = branches.find((b: any) => b.id === selectedBranch);
     return branch?.semesters || [];
   }, [selectedBranch, branches]);
 
   const subjects = useMemo(() => {
     if (selectedBranch === 'all' || selectedSemester === 'all') return [];
-    const branch = branches.find(b => b.id === selectedBranch);
-    const semester = branch?.semesters.find(s => s.id === selectedSemester);
+    const branch = branches.find((b: any) => b.id === selectedBranch);
+    const semester = branch?.semesters.find((s: any) => s.id === selectedSemester);
     return semester?.subjects || [];
   }, [selectedBranch, selectedSemester, branches]);
-
-  // Get all resources with flattened structure
-  const allResources = useMemo(() => {
-    const resources: (Resource & {
-      branchName: string;
-      branchId: string;
-      semesterName: string;
-      semesterId: string;
-      subjectName: string;
-      subjectId: string;
-    })[] = [];
-
-    branches.forEach(branch => {
-      branch.semesters.forEach(semester => {
-        semester.subjects.forEach(subject => {
-          subject.resources.forEach(resource => {
-            resources.push({
-              ...resource,
-              branchName: branch.name,
-              branchId: branch.id,
-              semesterName: semester.name,
-              semesterId: semester.id,
-              subjectName: subject.title,
-              subjectId: subject.id
-            });
-          });
-        });
-      });
-    });
-
-    return resources;
-  }, [branches]);
-
-  // Filter and sort resources
+  
+  // Filter and sort resources from database
   const filteredResources = useMemo(() => {
     let filtered = allResources;
 
-    // Apply filters
     if (selectedBranch !== 'all') {
       filtered = filtered.filter(resource => resource.branchId === selectedBranch);
     }
-    
+
     if (selectedSemester !== 'all') {
       filtered = filtered.filter(resource => resource.semesterId === selectedSemester);
     }
-    
+
     if (selectedSubject !== 'all') {
       filtered = filtered.filter(resource => resource.subjectId === selectedSubject);
     }
@@ -89,30 +138,27 @@ const ResourcesPage = () => {
       filtered = filtered.filter(resource => resource.type === filterType);
     }
 
-    // Apply search
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(resource =>
-        resource.title.toLowerCase().includes(searchLower) ||
-        resource.description.toLowerCase().includes(searchLower) ||
-        resource.keywords?.some(keyword => keyword.toLowerCase().includes(searchLower)) ||
-        resource.author?.toLowerCase().includes(searchLower)
+        (resource.title || '').toLowerCase().includes(searchLower) ||
+        (resource.description || '').toLowerCase().includes(searchLower) ||
+        (resource.keywords || []).some((keyword: string) => keyword.toLowerCase().includes(searchLower)) ||
+        (resource.author || '').toLowerCase().includes(searchLower)
       );
     }
 
-    // Sort resources
     filtered.sort((a, b) => {
       let comparison = 0;
-      
       switch (sortBy) {
         case 'title':
-          comparison = a.title.localeCompare(b.title);
+          comparison = (a.title || '').localeCompare(b.title || '');
           break;
         case 'dateAdded':
-          comparison = new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime();
+          comparison = new Date(a.dateadded || a.dateAdded || "").getTime() - new Date(b.dateadded || b.dateAdded || "").getTime();
           break;
         case 'type':
-          comparison = a.type.localeCompare(b.type);
+          comparison = (a.type || '').localeCompare(b.type || '');
           break;
         case 'author':
           comparison = (a.author || '').localeCompare(b.author || '');
@@ -120,7 +166,6 @@ const ResourcesPage = () => {
         default:
           comparison = 0;
       }
-
       return sortOrder === 'asc' ? comparison : -comparison;
     });
 
@@ -138,10 +183,6 @@ const ResourcesPage = () => {
     setSelectedSubject('all');
   };
 
-  const handleUpdateData = (newData: any) => {
-    setResourcesData(newData.branches);
-  };
-  
   const clearFilters = () => {
     setSelectedBranch('all');
     setSelectedSemester('all');
@@ -151,28 +192,35 @@ const ResourcesPage = () => {
   };
 
   const hasActiveFilters = useMemo(() => {
-    return selectedBranch !== 'all' || 
-           selectedSemester !== 'all' || 
-           selectedSubject !== 'all' || 
-           !!searchTerm || 
-           filterType !== 'all';
+    return selectedBranch !== 'all' ||
+      selectedSemester !== 'all' ||
+      selectedSubject !== 'all' ||
+      !!searchTerm ||
+      filterType !== 'all';
   }, [selectedBranch, selectedSemester, selectedSubject, searchTerm, filterType]);
 
-  // Get resource statistics
+  // Resource stats from live resources
   const stats = useMemo(() => {
     const total = allResources.length;
-    const typeCount = allResources.reduce((acc, resource) => {
+    const typeCount = allResources.reduce((acc: Record<string, number>, resource: any) => {
       acc[resource.type] = (acc[resource.type] || 0) + 1;
       return acc;
-    }, {} as Record<string, number>);
-
+    }, {});
     return { total, typeCount };
   }, [allResources]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-300 bg-gray-950">
+        Loading resources from database...
+      </div>
+    );
+  }
 
   if (showManager) {
     return (
       <ResourceManager
-        data={{ branches: resourcesData }}
+        data={{ branches: branchesData }}
         onUpdate={handleUpdateData}
         onClose={() => setShowManager(false)}
       />
@@ -183,11 +231,8 @@ const ResourcesPage = () => {
     <div className="min-h-screen bg-gray-950 text-white">
       <div className="container mx-auto p-6 space-y-6">
         <ResourceHeader canManageContent={canManageContent} onManageClick={() => setShowManager(true)} />
-
         {user && <ResourceUserStatus />}
-
         <ResourceStats stats={stats} />
-        
         <ResourceFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -207,8 +252,7 @@ const ResourcesPage = () => {
           semesters={semesters}
           subjects={subjects}
         />
-        
-        <ResourceList 
+        <ResourceList
           resources={filteredResources}
           hasActiveFilters={hasActiveFilters}
           onClearFilters={clearFilters}
@@ -219,3 +263,4 @@ const ResourcesPage = () => {
 };
 
 export default ResourcesPage;
+
