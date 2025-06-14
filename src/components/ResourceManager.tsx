@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import ResourceUploadModal from './ResourceUploadModal';
 import ResourceCard from './ResourceCard';
+import { addResource, deleteResource } from "@/integrations/supabase/supabaseAcademicApi";
 
 interface ResourceManagerProps {
   data: any;
