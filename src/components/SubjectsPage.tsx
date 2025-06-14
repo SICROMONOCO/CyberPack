@@ -185,9 +185,23 @@ const SubjectsPage = () => {
                     {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
                   </div>
                   {branch.brochure && (
-                    <div className="flex items-center gap-2 text-sm text-blue-400">
-                      <FileText className="w-4 h-4" />
-                      Program Brochure Available
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="mt-2"
+                      >
+                        <a
+                          href={branch.brochure}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2"
+                        >
+                          <FileText className="w-4 h-4" />
+                          View Brochure
+                        </a>
+                      </Button>
                     </div>
                   )}
                 </div>
