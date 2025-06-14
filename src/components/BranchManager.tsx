@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/use-toast';
 
 interface BranchManagerProps {
   data: any;
@@ -17,9 +18,15 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
   const [editingBranch, setEditingBranch] = useState<string | null>(null);
   const [editingSubject, setEditingSubject] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
+  const { toast } = useToast();
+
+  // DEEP CLONE UTILITY
+  function deepClone(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+  }
 
   const handleSaveBranch = () => {
-    const updatedData = { ...data };
+    const updatedData = deepClone(data);
     if (editingBranch === 'new') {
       const newBranch = {
         id: Date.now().toString(),
@@ -28,6 +35,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
         semesters: []
       };
       updatedData.branches.push(newBranch);
+      toast({ title: 'Branch added', description: `Branch "${newBranch.name}" was created.`, duration: 2500 });
     } else {
       const branchIndex = updatedData.branches.findIndex((b: any) => b.id === editingBranch);
       if (branchIndex !== -1) {
@@ -35,6 +43,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
           ...updatedData.branches[branchIndex],
           ...formData
         };
+        toast({ title: 'Branch updated', description: `Branch "${formData.name}" was updated.`, duration: 2500 });
       }
     }
     onUpdate(updatedData);
@@ -43,13 +52,15 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
   };
 
   const handleDeleteBranch = (branchId: string) => {
-    const updatedData = { ...data };
+    const updatedData = deepClone(data);
+    const deletedBranch = updatedData.branches.find((b: any) => b.id === branchId);
     updatedData.branches = updatedData.branches.filter((b: any) => b.id !== branchId);
     onUpdate(updatedData);
+    toast({ title: 'Branch deleted', description: deletedBranch ? `"${deletedBranch.name}" was deleted.` : 'Branch deleted.', duration: 2500 });
   };
 
   const handleAddSemester = (branchId: string) => {
-    const updatedData = { ...data };
+    const updatedData = deepClone(data);
     const branchIndex = updatedData.branches.findIndex((b: any) => b.id === branchId);
     if (branchIndex !== -1) {
       const newSemester = {
@@ -59,6 +70,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
       };
       updatedData.branches[branchIndex].semesters.push(newSemester);
       onUpdate(updatedData);
+      toast({ title: 'Semester added', description: `Added ${newSemester.name} to ${updatedData.branches[branchIndex].name}`, duration: 2500 });
     }
   };
 
@@ -126,7 +138,7 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
         </Card>
       )}
 
-      <div className="grid gap-4">
+      <div className="flex flex-col gap-4">
         {data.branches.map((branch: any) => (
           <Card key={branch.id} className="bg-gray-900 border-gray-800">
             <CardHeader>
@@ -251,3 +263,4 @@ const BranchManager = ({ data, onUpdate, onClose }: BranchManagerProps) => {
 };
 
 export default BranchManager;
+
