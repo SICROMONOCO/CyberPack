@@ -1,11 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-import { Search, BookOpen, Settings, FileText, Calendar, Lock } from 'lucide-react';
+import { Search, BookOpen, FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
-import BranchManager from './BranchManager';
-import { useAuth } from '@/contexts/AuthContext';
 import { getBranchesWithSemestersAndSubjects } from "@/integrations/supabase/supabaseAcademicApi";
 
 export type SupabaseBranch = {
@@ -34,29 +32,24 @@ const SubjectsPage = () => {
   const [selectedBranch, setSelectedBranch] = useState('all');
   const [selectedSemester, setSelectedSemester] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
-  const [showCMS, setShowCMS] = useState(false);
   const [subjectsData, setSubjectsData] = useState<{ branches: SupabaseBranch[] }>({ branches: [] });
-  const { canManageContent, user } = useAuth();
   const [loading, setLoading] = useState(true);
 
-  // Refetch data from Supabase
-  const fetchAllFromSupabase = async () => {
-    setLoading(true);
-    try {
-      const apiData = await getBranchesWithSemestersAndSubjects();
-      setSubjectsData({ branches: apiData });
-    } catch (e) {
-      setSubjectsData({ branches: [] });
-      console.error(e);
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    fetchAllFromSupabase();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const apiData = await getBranchesWithSemestersAndSubjects();
+        setSubjectsData({ branches: apiData });
+      } catch (e) {
+        setSubjectsData({ branches: [] });
+        console.error(e);
+      }
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
-  // These flatMaps are safe on live data
   const filteredSubjects = subjectsData.branches.flatMap(branch =>
     branch.semesters.flatMap(semester =>
       semester.subjects.filter(subject => {
@@ -72,7 +65,7 @@ const SubjectsPage = () => {
         semesterName: semester.name,
         branchId: branch.id,
         semesterId: semester.id,
-        creditHours: (typeof subject.creditHours === "number" ? subject.creditHours : 3), // fallback
+        creditHours: (typeof subject.creditHours === "number" ? subject.creditHours : 3),
         tag: subject.tag ?? "",
         description: subject.description ?? "",
         code: subject.code ?? "",
@@ -100,74 +93,21 @@ const SubjectsPage = () => {
     return <div className="text-center text-gray-400 p-10">Loading subjects from database...</div>;
   }
 
-  if (showCMS) {
-    return (
-      <BranchManager
-        data={subjectsData}
-        onUpdate={() => fetchAllFromSupabase()}
-        onClose={() => {
-          setShowCMS(false);
-          fetchAllFromSupabase();
-        }}
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
-              Academic Subjects
-            </h1>
-            <p className="text-gray-400">Explore courses organized by academic branches and semesters</p>
-          </div>
-          {canManageContent ? (
-            <Button
-              onClick={() => setShowCMS(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Manage Content
-            </Button>
-          ) : (
-            <div className="flex items-center gap-2 text-gray-500">
-              <Lock className="w-4 h-4" />
-              <span className="text-sm">Editor access required</span>
-            </div>
-          )}
+        {/* Header - Simplified */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+            Academic Subjects
+          </h1>
+          <p className="text-gray-400">Explore courses organized by academic branches and semesters</p>
         </div>
-
-        {/* User Role Info */}
-        {user && (
-          <div className="mb-6">
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-300">
-                    Signed in as <span className="font-medium text-white">{user.username}</span>
-                    <span className="ml-2 px-2 py-1 rounded text-xs bg-blue-600 text-white">
-                      {user.role}
-                    </span>
-                  </div>
-                  {canManageContent && (
-                    <div className="text-xs text-green-400">
-                      ✓ Content management enabled
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {/* Filters and Search */}
         <div className="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Search */}
-            <div className="lg:col-span-2 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 placeholder="Search subjects..."
@@ -177,7 +117,6 @@ const SubjectsPage = () => {
               />
             </div>
 
-            {/* Branch Filter */}
             <select
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
@@ -189,7 +128,6 @@ const SubjectsPage = () => {
               ))}
             </select>
 
-            {/* Semester Filter */}
             <select
               value={selectedSemester}
               onChange={(e) => setSelectedSemester(e.target.value)}
@@ -203,7 +141,6 @@ const SubjectsPage = () => {
               ))}
             </select>
 
-            {/* Tag Filter */}
             <select
               value={selectedTag}
               onChange={(e) => setSelectedTag(e.target.value)}
@@ -240,26 +177,16 @@ const SubjectsPage = () => {
                     <BookOpen className="w-4 h-4" />
                     {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
                   </div>
-                  {/* Supabase: brochure is string or null. Show if set */}
-                  {branch.brochure && typeof branch.brochure === "string" && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        asChild
-                        className="mt-2"
-                      >
-                        <a
-                          href={branch.brochure}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <FileText className="w-4 h-4" />
-                          View Brochure
-                        </a>
-                      </Button>
-                    </div>
+                  {branch.brochure && (
+                    <a
+                      href={branch.brochure}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 mt-2 text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      View Brochure
+                    </a>
                   )}
                 </div>
               </CardContent>

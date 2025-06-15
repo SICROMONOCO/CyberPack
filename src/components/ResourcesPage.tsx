@@ -1,9 +1,5 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import ResourceManager from './ResourceManager';
-import { useAuth } from '@/contexts/AuthContext';
-import ResourceHeader from './ResourceHeader';
-import ResourceUserStatus from './ResourceUserStatus';
 import ResourceStats from './ResourceStats';
 import ResourceFilters from './ResourceFilters';
 import ResourceList from './ResourceList';
@@ -17,13 +13,10 @@ const ResourcesPage = () => {
   const [sortBy, setSortBy] = useState<string>('dateAdded');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<string>('all');
-  const [showManager, setShowManager] = useState(false);
   const [branchesData, setBranchesData] = useState<any[]>([]);
   const [allResources, setAllResources] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { canManageContent, user } = useAuth();
 
-  // Fetch all branches, semesters, subjects from Supabase
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -31,7 +24,6 @@ const ResourcesPage = () => {
         const branches = await getBranchesWithSemestersAndSubjects();
         setBranchesData(branches);
 
-        // Now fetch all resources for every subject
         const resourcePromises: Promise<any[]>[] = [];
         branches.forEach(branch =>
           branch.semesters.forEach(semester =>
@@ -64,46 +56,6 @@ const ResourcesPage = () => {
     fetchData();
   }, []);
 
-  // Refetch resources after management
-  const handleUpdateData = () => {
-    setLoading(true);
-    // Just re-run the same fetching as above
-    (async () => {
-      try {
-        const branches = await getBranchesWithSemestersAndSubjects();
-        setBranchesData(branches);
-
-        const resourcePromises: Promise<any[]>[] = [];
-        branches.forEach(branch =>
-          branch.semesters.forEach(semester =>
-            semester.subjects.forEach((subject: any) => {
-              resourcePromises.push(
-                getResourcesForSubject(subject.id).then(resources =>
-                  resources.map(resource => ({
-                    ...resource,
-                    branchName: branch.name,
-                    branchId: branch.id,
-                    semesterName: semester.name,
-                    semesterId: semester.id,
-                    subjectName: subject.title,
-                    subjectId: subject.id
-                  }))
-                )
-              );
-            })
-          )
-        );
-        const resourcesBySubject = await Promise.all(resourcePromises);
-        setAllResources(resourcesBySubject.flat());
-      } catch (e) {
-        setBranchesData([]);
-        setAllResources([]);
-      }
-      setLoading(false);
-    })();
-  };
-
-  // Get all available options for filters
   const branches = branchesData || [];
   const semesters = useMemo(() => {
     if (selectedBranch === 'all') return [];
@@ -118,7 +70,6 @@ const ResourcesPage = () => {
     return semester?.subjects || [];
   }, [selectedBranch, selectedSemester, branches]);
   
-  // Filter and sort resources from database
   const filteredResources = useMemo(() => {
     let filtered = allResources;
 
@@ -199,7 +150,6 @@ const ResourcesPage = () => {
       filterType !== 'all';
   }, [selectedBranch, selectedSemester, selectedSubject, searchTerm, filterType]);
 
-  // Resource stats from live resources
   const stats = useMemo(() => {
     const total = allResources.length;
     const typeCount = allResources.reduce((acc: Record<string, number>, resource: any) => {
@@ -217,21 +167,19 @@ const ResourcesPage = () => {
     );
   }
 
-  if (showManager) {
-    return (
-      <ResourceManager
-        data={{ branches: branchesData }}
-        onUpdate={handleUpdateData}
-        onClose={() => setShowManager(false)}
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       <div className="container mx-auto p-6 space-y-6">
-        <ResourceHeader canManageContent={canManageContent} onManageClick={() => setShowManager(true)} />
-        {user && <ResourceUserStatus />}
+        {/* Header - Simplified */}
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Resources Library
+          </h1>
+          <p className="text-gray-300 mt-2">
+            Access study materials, documents, and learning resources organized by subject
+          </p>
+        </div>
+
         <ResourceStats stats={stats} />
         <ResourceFilters
           searchTerm={searchTerm}
@@ -263,4 +211,3 @@ const ResourcesPage = () => {
 };
 
 export default ResourcesPage;
-
