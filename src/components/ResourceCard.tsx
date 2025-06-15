@@ -65,28 +65,28 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01]">
-      <CardContent className="p-8">
-        <div className="flex gap-6">
+    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
+      <CardContent className="p-6">
+        <div className="flex gap-4">
           {/* Type Icon */}
-          <div className={`p-4 rounded-xl ${getTypeColor(resource.type)} flex-shrink-0 shadow-lg`}>
+          <div className={`p-3 rounded-lg ${getTypeColor(resource.type)}`}>
             {getTypeIcon(resource.type)}
           </div>
           
           {/* Content */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 space-y-3">
             {/* Header with Title and Action Button */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 space-y-2">
-                <h3 className="text-xl font-bold text-white leading-tight">
+                <h3 className="text-xl font-semibold text-white">
                   {resource.title}
                 </h3>
-                <div className="flex items-center gap-3">
-                  <Badge className={`${getTypeColor(resource.type)} text-sm font-medium px-3 py-1`}>
+                <div className="flex items-center gap-2">
+                  <Badge className={`${getTypeColor(resource.type)} text-xs px-2 py-1`}>
                     {resource.type.toUpperCase()}
                   </Badge>
                   {resource.fileSize && (
-                    <span className="text-sm text-gray-400 bg-gray-800 px-2 py-1 rounded">
+                    <span className="text-sm text-gray-400">
                       {resource.fileSize}
                     </span>
                   )}
@@ -95,13 +95,13 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               
               <Button
                 onClick={handleAction}
-                className="bg-blue-600 hover:bg-blue-700 text-white border-0 px-6 py-3 text-sm font-medium"
+                className="bg-blue-600 hover:bg-blue-700 text-white"
                 size="sm"
               >
                 {resource.type === 'link' ? (
                   <>
                     <ExternalLink className="w-4 h-4 mr-2" />
-                    Open Link
+                    Open
                   </>
                 ) : (
                   <>
@@ -113,20 +113,20 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             </div>
             
             {/* Description */}
-            <p className="text-gray-300 text-base leading-relaxed line-clamp-2">
+            <p className="text-gray-300 text-sm leading-relaxed">
               {resource.description}
             </p>
             
             {/* Metadata */}
-            <div className="space-y-3 pt-2">
+            <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Calendar className="w-4 h-4 text-blue-400" />
+                <Calendar className="w-4 h-4" />
                 <span>Added: {new Date(resource.dateAdded).toLocaleDateString()}</span>
               </div>
               
               {resource.author && (
                 <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <User className="w-4 h-4 text-green-400" />
+                  <User className="w-4 h-4" />
                   <span>Author: {resource.author}</span>
                 </div>
               )}
@@ -134,16 +134,16 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
               {/* Keywords */}
               {resource.keywords && resource.keywords.length > 0 && (
                 <div className="flex items-start gap-2">
-                  <Tag className="w-4 h-4 text-yellow-400 mt-1 flex-shrink-0" />
-                  <div className="flex flex-wrap gap-2">
-                    {resource.keywords.slice(0, 4).map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-400 bg-gray-800/50">
+                  <Tag className="w-4 h-4 text-gray-400 mt-0.5" />
+                  <div className="flex flex-wrap gap-1">
+                    {resource.keywords.slice(0, 3).map((keyword, index) => (
+                      <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-400">
                         {keyword}
                       </Badge>
                     ))}
-                    {resource.keywords.length > 4 && (
-                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-400 bg-gray-800/50">
-                        +{resource.keywords.length - 4} more
+                    {resource.keywords.length > 3 && (
+                      <Badge variant="outline" className="text-xs border-gray-600 text-gray-400">
+                        +{resource.keywords.length - 3}
                       </Badge>
                     )}
                   </div>
