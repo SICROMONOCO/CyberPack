@@ -11,7 +11,7 @@ export async function getBranchesWithSemestersAndSubjects() {
       semesters (
         id, name, created_at,
         subjects (
-          id, title, description, tag, created_at
+          id, title, description, tag, code, credit_hours, instructor, prerequisites, created_at
         )
       )
     `);
@@ -21,7 +21,12 @@ export async function getBranchesWithSemestersAndSubjects() {
 }
 
 export async function getResourcesForSubject(subjectId: string) {
-  const { data, error } = await supabase.from("resources").select("*").eq("subject_id", subjectId);
+  const { data, error } = await supabase
+    .from("resources")
+    .select("*")
+    .eq("subject_id", subjectId)
+    .eq("status", "active");
+  
   if (error) throw error;
   return data || [];
 }

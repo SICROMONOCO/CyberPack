@@ -37,11 +37,15 @@ export type Database = {
         Row: {
           author: string | null
           created_at: string | null
-          dateadded: string | null
+          date_added: string | null
           description: string | null
-          file_url: string | null
+          file_path: string | null
+          file_size: string | null
           id: string
           keywords: string[] | null
+          language: string | null
+          last_updated: string | null
+          status: string | null
           subject_id: string
           title: string
           type: string | null
@@ -50,11 +54,15 @@ export type Database = {
         Insert: {
           author?: string | null
           created_at?: string | null
-          dateadded?: string | null
+          date_added?: string | null
           description?: string | null
-          file_url?: string | null
+          file_path?: string | null
+          file_size?: string | null
           id?: string
           keywords?: string[] | null
+          language?: string | null
+          last_updated?: string | null
+          status?: string | null
           subject_id: string
           title: string
           type?: string | null
@@ -63,11 +71,15 @@ export type Database = {
         Update: {
           author?: string | null
           created_at?: string | null
-          dateadded?: string | null
+          date_added?: string | null
           description?: string | null
-          file_url?: string | null
+          file_path?: string | null
+          file_size?: string | null
           id?: string
           keywords?: string[] | null
+          language?: string | null
+          last_updated?: string | null
+          status?: string | null
           subject_id?: string
           title?: string
           type?: string | null
@@ -114,25 +126,37 @@ export type Database = {
       }
       subjects: {
         Row: {
+          code: string | null
           created_at: string | null
+          credit_hours: number | null
           description: string | null
           id: string
+          instructor: string | null
+          prerequisites: string[] | null
           semester_id: string
           tag: string | null
           title: string
         }
         Insert: {
+          code?: string | null
           created_at?: string | null
+          credit_hours?: number | null
           description?: string | null
           id?: string
+          instructor?: string | null
+          prerequisites?: string[] | null
           semester_id: string
           tag?: string | null
           title: string
         }
         Update: {
+          code?: string | null
           created_at?: string | null
+          credit_hours?: number | null
           description?: string | null
           id?: string
+          instructor?: string | null
+          prerequisites?: string[] | null
           semester_id?: string
           tag?: string | null
           title?: string

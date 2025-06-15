@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -125,7 +124,7 @@ const ResourceFilters = ({
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="dateAdded">Date Added</SelectItem>
+              <SelectItem value="date_added">Date Added</SelectItem>
               <SelectItem value="title">Title</SelectItem>
               <SelectItem value="type">Type</SelectItem>
               <SelectItem value="author">Author</SelectItem>

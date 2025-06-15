@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import ResourceStats from './ResourceStats';
 import ResourceFilters from './ResourceFilters';
@@ -10,7 +9,7 @@ const ResourcesPage = () => {
   const [selectedBranch, setSelectedBranch] = useState<string>('all');
   const [selectedSemester, setSelectedSemester] = useState<string>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<string>('dateAdded');
+  const [sortBy, setSortBy] = useState<string>('date_added');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<string>('all');
   const [branchesData, setBranchesData] = useState<any[]>([]);
@@ -32,6 +31,10 @@ const ResourcesPage = () => {
                 getResourcesForSubject(subject.id).then(resources =>
                   resources.map(resource => ({
                     ...resource,
+                    dateAdded: resource.date_added,
+                    fileSize: resource.file_size,
+                    lastUpdated: resource.last_updated,
+                    filePath: resource.file_path,
                     branchName: branch.name,
                     branchId: branch.id,
                     semesterName: semester.name,
@@ -105,8 +108,8 @@ const ResourcesPage = () => {
         case 'title':
           comparison = (a.title || '').localeCompare(b.title || '');
           break;
-        case 'dateAdded':
-          comparison = new Date(a.dateadded || a.dateAdded || "").getTime() - new Date(b.dateadded || b.dateAdded || "").getTime();
+        case 'date_added':
+          comparison = new Date(a.dateAdded || a.date_added || "").getTime() - new Date(b.dateAdded || b.date_added || "").getTime();
           break;
         case 'type':
           comparison = (a.type || '').localeCompare(b.type || '');
