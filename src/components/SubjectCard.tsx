@@ -1,6 +1,7 @@
+
 import React from 'react';
-import { Clock, BookOpen, Tag, User, Award } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen, Tag, User, Award } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface SubjectCardProps {
@@ -35,53 +36,67 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex-1">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                {subject.code && (
-                  <p className="text-sm text-blue-400 font-mono mb-1">{subject.code}</p>
-                )}
-                <h3 className="text-xl font-semibold text-white leading-tight mb-2">{subject.title}</h3>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <BookOpen className="w-3 h-3" />
-                    {subject.branchName}
-                  </span>
-                  <span>{subject.semesterName}</span>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {subject.creditHours} Credit Hours
-                  </div>
+    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]">
+      <CardContent className="p-8">
+        <div className="space-y-6">
+          {/* Header with Title and Tag */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 space-y-3">
+              {subject.code && (
+                <div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-mono rounded-md">
+                  {subject.code}
                 </div>
-              </div>
-              <Badge className={`ml-4 ${getTagColor(subject.tag)}`}>
-                {subject.tag}
-              </Badge>
+              )}
+              <h3 className="text-2xl font-bold text-white leading-tight">{subject.title}</h3>
             </div>
-            
-            <p className="text-gray-300 mb-4 line-clamp-2">
-              {subject.description}
-            </p>
-            
-            <div className="flex items-center gap-6 text-sm text-gray-400">
+            <Badge className={`${getTagColor(subject.tag)} px-4 py-2 text-sm font-medium`}>
+              <Tag className="w-4 h-4 mr-2" />
+              {subject.tag}
+            </Badge>
+          </div>
+          
+          {/* Description */}
+          <p className="text-gray-300 text-lg leading-relaxed">
+            {subject.description}
+          </p>
+          
+          {/* Branch and Semester Info */}
+          <div className="flex items-center gap-6 text-gray-400">
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-blue-400" />
+              <span className="font-medium">{subject.branchName}</span>
+            </div>
+            <div className="text-gray-500">•</div>
+            <span className="font-medium">{subject.semesterName}</span>
+          </div>
+          
+          {/* Additional Info */}
+          {(subject.instructor || (subject.prerequisites && subject.prerequisites.length > 0)) && (
+            <div className="pt-4 border-t border-gray-800 space-y-3">
               {subject.instructor && (
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  {subject.instructor}
+                <div className="flex items-center gap-3 text-gray-300">
+                  <User className="w-5 h-5 text-green-400" />
+                  <span><strong>Instructor:</strong> {subject.instructor}</span>
                 </div>
               )}
               
               {subject.prerequisites && subject.prerequisites.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4" />
-                  <span>Prerequisites: {subject.prerequisites.join(', ')}</span>
+                <div className="flex items-start gap-3 text-gray-300">
+                  <Award className="w-5 h-5 text-yellow-400 mt-0.5" />
+                  <div>
+                    <strong>Prerequisites:</strong>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {subject.prerequisites.map((prereq, index) => (
+                        <Badge key={index} variant="outline" className="border-gray-600 text-gray-400 bg-gray-800/50">
+                          {prereq}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

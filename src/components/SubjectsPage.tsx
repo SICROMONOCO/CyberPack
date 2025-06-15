@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, BookOpen, FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -94,19 +93,19 @@ const SubjectsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header - Simplified */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+    <div className="min-h-screen bg-gray-950 text-white">
+      <div className="max-w-7xl mx-auto p-8 space-y-10">
+        {/* Header */}
+        <div className="space-y-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Academic Subjects
           </h1>
-          <p className="text-gray-400">Explore courses organized by academic branches and semesters</p>
+          <p className="text-xl text-gray-400 leading-relaxed">Explore courses organized by academic branches and semesters</p>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-gray-900 rounded-xl p-6 mb-8 border border-gray-800">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800 shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
@@ -155,7 +154,7 @@ const SubjectsPage = () => {
         </div>
 
         {/* Academic Branches Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {subjectsData.branches.map(branch => (
             <Card key={branch.id} className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-colors">
               <CardHeader>
@@ -195,29 +194,29 @@ const SubjectsPage = () => {
         </div>
 
         {/* Results */}
-        <div className="mb-4">
-          <h2 className="text-xl font-semibold text-white">
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-white">
             Found {filteredSubjects.length} subjects
           </h2>
-        </div>
 
-        {/* Subject Cards */}
-        <div className="space-y-4">
-          {filteredSubjects.map(subject => (
-            <SubjectCard
-              key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
-              subject={subject}
-            />
-          ))}
-        </div>
-
-        {filteredSubjects.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-400 mb-2">No subjects found</h3>
-            <p className="text-gray-500">Try adjusting your search terms or filters</p>
+          {/* Subject Cards */}
+          <div className="space-y-6">
+            {filteredSubjects.map(subject => (
+              <SubjectCard
+                key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
+                subject={subject}
+              />
+            ))}
           </div>
-        )}
+
+          {filteredSubjects.length === 0 && (
+            <div className="text-center py-16">
+              <BookOpen className="w-20 h-20 text-gray-600 mx-auto mb-6" />
+              <h3 className="text-2xl font-semibold text-gray-400 mb-3">No subjects found</h3>
+              <p className="text-lg text-gray-500">Try adjusting your search terms or filters</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
