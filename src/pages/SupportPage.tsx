@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Mail, ExternalLink, MessageCircle, Phone, Clock, Globe, HelpCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -73,29 +72,22 @@ const SupportPage = () => {
   // External Links
   const externalLinks = [
     {
-      title: 'University\'s Official Site',
+      title: "University's Official Site",
       url: 'https://fpo.uiz.ac.ma',
       description: 'Access official university information, announcements, academic calendar, and administrative services.',
       icon: Globe,
       category: 'Official'
     },
     {
-      title: 'University\'s Official Resources Site',
+      title: "University's Official Resources Site",
       url: 'https://ecours-fpo.uiz.ac.ma',
       description: 'Official e-learning platform with course materials, assignments, and instructor communications.',
       icon: ExternalLink,
       category: 'Academic'
     },
     {
-      title: 'Library Services',
-      url: 'https://library.uiz.ac.ma',
-      description: 'Access digital library resources, research databases, and academic publications.',
-      icon: Globe,
-      category: 'Academic'
-    },
-    {
       title: 'Student Portal',
-      url: 'https://student.uiz.ac.ma',
+      url: 'https://ent-fpo.uiz.ac.ma',
       description: 'Check grades, view schedules, register for courses, and access student services.',
       icon: ExternalLink,
       category: 'Student Services'
@@ -116,8 +108,7 @@ const SupportPage = () => {
     const body = encodeURIComponent(
       `Name: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMessage:\n${contactForm.message}`
     );
-    window.location.href = `mailto:lxo.Group@protonmail.com?subject=${subject}&body=${body}`;
-    
+    window.location.href = `mailto:ixo.intelligence@gmail.com?subject=${subject}&body=${body}`;
     // Reset form
     setContactForm({ name: '', email: '', subject: '', message: '' });
   };
@@ -151,10 +142,10 @@ const SupportPage = () => {
               <h3 className="text-lg font-semibold text-white mb-2">Email Support</h3>
               <p className="text-gray-400 mb-4">Get help via email</p>
               <Button
-                onClick={() => window.location.href = 'mailto:lxo.Group@protonmail.com'}
+                onClick={() => window.location.href = 'mailto:ixo.intelligence@gmail.com'}
                 className="bg-blue-600 hover:bg-blue-700 text-white w-full"
               >
-                lxo.Group@protonmail.com
+                ixo.intelligence@gmail.com
               </Button>
             </CardContent>
           </Card>

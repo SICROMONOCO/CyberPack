@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Sidebar from '@/components/Sidebar';
 import HomePage from '@/components/HomePage';
 import SubjectsPage from '@/components/SubjectsPage';
 import ResourcesPage from '@/components/ResourcesPage';
-import SupportPage from '@/components/SupportPage';
+import SupportPage from '@/pages/SupportPage';
 import AboutPage from '@/components/AboutPage';
 
 const Index = () => {
@@ -39,7 +38,7 @@ const Index = () => {
   const renderContent = () => {
     switch (activeItem) {
       case 'home':
-        return <HomePage />;
+        return <HomePage onNavigate={handleItemClick} />;
       case 'subjects':
         return <SubjectsPage />;
       case 'resources':
@@ -49,7 +48,7 @@ const Index = () => {
       case 'about':
         return <AboutPage />;
       default:
-        return <HomePage />;
+        return <HomePage onNavigate={handleItemClick} />;
     }
   };
 

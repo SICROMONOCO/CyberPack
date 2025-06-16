@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Download, ExternalLink, Calendar, FileText, Video, Link as LinkIcon, User, Tag } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -57,10 +56,24 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
   };
 
   const handleAction = () => {
-    if (resource.type === 'link' && resource.url) {
-      window.open(resource.url, '_blank');
+    if (resource.url) {
+      // For files, trigger download; for links, open in new tab
+      if (resource.type === 'link') {
+        window.open(resource.url, '_blank');
+      } else {
+        // Create a temporary anchor to trigger download
+        const a = document.createElement('a');
+        a.href = resource.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.download = resource.title || '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     } else {
-      console.log('Download/View resource:', resource.id);
+      // fallback
+      console.log('No resource URL found:', resource.id);
     }
   };
 
@@ -69,7 +82,10 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       <CardContent className="p-6">
         <div className="flex gap-4">
           {/* Type Icon */}
-          <div className={`p-3 rounded-lg ${getTypeColor(resource.type)}`}>
+          <div
+            className={`inline-flex items-center justify-center rounded-lg ${getTypeColor(resource.type)}`}
+            style={{ width: '2.5rem', height: '2.5rem', minWidth: '2.5rem', minHeight: '2.5rem', padding: 0 }}
+          >
             {getTypeIcon(resource.type)}
           </div>
           

@@ -1,33 +1,33 @@
-
 import React from 'react';
 import { BookOpen, FolderOpen, HelpCircle, ArrowRight, Users, Award, Clock } from 'lucide-react';
 
-const HomePage = () => {
+interface HomePageProps {
+  onNavigate?: (section: string) => void;
+}
+
+const HomePage = ({ onNavigate }: HomePageProps) => {
   const featureCards = [
     {
       title: 'Explore Subjects',
       description: 'Access materials for all your academic branches and specializations.',
       icon: BookOpen,
-      gradient: 'from-blue-600 to-purple-600'
+      gradient: 'from-blue-600 to-purple-600',
+      section: 'subjects',
     },
     {
       title: 'Access Resources',
       description: 'Download or view study resources, notes, and reference materials.',
       icon: FolderOpen,
-      gradient: 'from-purple-600 to-pink-600'
+      gradient: 'from-purple-600 to-pink-600',
+      section: 'resources',
     },
     {
       title: 'Get Support & Help',
       description: 'Get assistance and find answers to your academic questions.',
       icon: HelpCircle,
-      gradient: 'from-pink-600 to-red-600'
+      gradient: 'from-pink-600 to-red-600',
+      section: 'support',
     }
-  ];
-
-  const stats = [
-    { icon: Users, label: 'Active Students', value: '500+' },
-    { icon: BookOpen, label: 'Course Materials', value: '150+' },
-    { icon: Award, label: 'Success Rate', value: '95%' }
   ];
 
   return (
@@ -53,22 +53,6 @@ const HomePage = () => {
               <p className="text-lg text-blue-400 font-semibold">
                 Excel in your studies with everything you need, beautifully organized.
               </p>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-8 pt-8">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="flex items-center gap-3 bg-gray-800/50 rounded-full px-6 py-3 backdrop-blur-sm">
-                    <Icon size={24} className="text-blue-400" />
-                    <div className="text-left">
-                      <div className="font-bold text-white">{stat.value}</div>
-                      <div className="text-sm text-gray-400">{stat.label}</div>
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
         </div>
@@ -100,53 +84,19 @@ const HomePage = () => {
                     </p>
                   </div>
                   
-                  <div className="flex items-center text-blue-400 font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                  <button
+                    className="flex items-center text-blue-400 font-semibold group-hover:translate-x-2 transition-transform duration-300 focus:outline-none"
+                    onClick={() => onNavigate && onNavigate(card.section)}
+                    tabIndex={0}
+                    aria-label={`Learn more about ${card.title}`}
+                  >
                     <span>Learn more</span>
                     <ArrowRight size={20} className="ml-2" />
-                  </div>
+                  </button>
                 </div>
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Latest Updates Section */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="text-center space-y-12">
-          <div>
-            <h2 className="text-4xl font-bold text-white mb-4">Latest Updates</h2>
-            <p className="text-xl text-gray-400">Stay informed with our newest resources and features</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-blue-500/50 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock size={20} className="text-blue-400" />
-                <span className="text-sm text-gray-400">2 days ago</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">New Cybersecurity Resources Added</h3>
-              <p className="text-gray-400 text-sm">Updated materials for advanced encryption and network security courses.</p>
-            </div>
-            
-            <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-purple-500/50 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock size={20} className="text-purple-400" />
-                <span className="text-sm text-gray-400">1 week ago</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Algorithm Study Guides Available</h3>
-              <p className="text-gray-400 text-sm">Comprehensive guides for data structures and algorithm analysis.</p>
-            </div>
-            
-            <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-pink-500/50 transition-colors">
-              <div className="flex items-center gap-3 mb-4">
-                <Clock size={20} className="text-pink-400" />
-                <span className="text-sm text-gray-400">2 weeks ago</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Support System Enhanced</h3>
-              <p className="text-gray-400 text-sm">Improved help system with faster response times and better resources.</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
