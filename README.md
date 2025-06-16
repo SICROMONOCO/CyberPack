@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Welcome to your CyberPack project
 
 ## Project info
 
@@ -7,12 +7,6 @@
 ## How can I edit this code?
 
 There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/8110d967-74c8-4507-921c-01966d11bf12) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
 
 **Use your preferred IDE**
 
