@@ -243,7 +243,7 @@ const AboutPage = () => {
                 <div className="flex flex-col items-center text-center max-w-sm mb-8">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 overflow-hidden">
                   <img
-                  src="/icon 1.jpg"
+                  src={`${import.meta.env.BASE_URL || '/'}icon 1.jpg`}
                   alt="Bilal's profile"
                   className="w-20 h-20 rounded-full object-cover border-4 border-blue-500 shadow-lg"
                   />
