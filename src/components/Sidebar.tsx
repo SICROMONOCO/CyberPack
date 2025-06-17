@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Home, BookOpen, FolderOpen, HelpCircle, Info, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -33,18 +32,25 @@ const Sidebar = ({ isCollapsed, onToggle, activeItem, onItemClick }: SidebarProp
       <div className={cn(
         "fixed left-0 top-0 h-full bg-gray-900 border-r border-gray-700 transition-all duration-300 z-50",
         "shadow-lg backdrop-blur-sm",
-        isCollapsed ? "w-16" : "w-64",
+        isCollapsed ? "w-30" : "w-64",
         // Mobile responsiveness
         "md:translate-x-0",
         isCollapsed ? "translate-x-0" : "translate-x-0"
       )}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-900/95 backdrop-blur-sm">
-          {!isCollapsed && (
-            <h1 className="text-xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              CyberPack
-            </h1>
-          )}
+          {/* Logo Placeholder - always visible */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg select-none">
+              CP
+            </div>
+            {/* Title only when expanded */}
+            {!isCollapsed && (
+              <h1 className="text-xl font-bold text-white bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent ml-2">
+                CyberPack
+              </h1>
+            )}
+          </div>
           <button
             onClick={onToggle}
             className="p-2 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-all duration-200 transform hover:scale-105"
