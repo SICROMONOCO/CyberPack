@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Search, BookOpen, FileText, Calendar } from 'lucide-react';
+import { BookOpen, FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
 import { getBranchesWithSemestersAndSubjects } from "@/integrations/supabase/supabaseAcademicApi";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export type SupabaseBranch = {
   id: string;
@@ -42,7 +46,7 @@ const SubjectsPage = () => {
         setSubjectsData({ branches: apiData });
       } catch (e) {
         setSubjectsData({ branches: [] });
-        console.error(e);
+        console.error(e); 
       }
       setLoading(false);
     };
@@ -88,6 +92,14 @@ const SubjectsPage = () => {
     ),
   ].filter(Boolean);
 
+  // Group filteredSubjects by semesterName
+  const groupedBySemester = filteredSubjects.reduce((acc, subject) => {
+    const key = `${subject.semesterName} - ${subject.branchName}`;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(subject);
+    return acc;
+  }, {} as Record<string, typeof filteredSubjects>);
+
   if (loading) {
     return <div className="text-center text-gray-400 p-10">Loading subjects from database...</div>;
   }
@@ -104,94 +116,139 @@ const SubjectsPage = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800 shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <Card className="bg-gray-950/80 border border-gray-800 shadow-lg p-6 md:p-10 mb-8">
+          <h2 className="text-2xl font-bold text-blue-400 mb-6">Filter Subjects</h2>
+          <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-wrap">
+            {/* Search */}
+            <div className="flex-1 min-w-[180px]">
+              <Label htmlFor="subject-search" className="mb-2 text-white">Search</Label>
               <Input
-                placeholder="Search subjects..."
+                id="subject-search"
+                placeholder="Search by subject title or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-gray-800 border-gray-700 text-white"
+                className="bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all rounded-lg shadow-sm"
               />
             </div>
-
-            <select
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white"
-            >
-              <option value="all">All Branches</option>
-              {subjectsData.branches.map(branch => (
-                <option key={branch.id} value={branch.id}>{branch.name}</option>
-              ))}
-            </select>
-
-            <select
-              value={selectedSemester}
-              onChange={(e) => setSelectedSemester(e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white"
-            >
-              <option value="all">All Semesters</option>
-              {allSemesters.map(semester => (
-                <option key={`${semester.branchName}-${semester.id}`} value={semester.id}>
-                  {semester.name} ({semester.branchName})
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={selectedTag}
-              onChange={(e) => setSelectedTag(e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white"
-            >
-              <option value="all">All Tags</option>
-              {allTags.map(tag => (
-                <option key={tag} value={tag}>{tag}</option>
-              ))}
-            </select>
+            {/* Branch Filter */}
+            <div className="flex-1 min-w-[180px]">
+              <Label className="mb-2 text-white">Branch</Label>
+              <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                  <SelectValue placeholder="All Branches" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Branches</SelectItem>
+                  {subjectsData.branches.map(branch => (
+                    <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Semester Filter */}
+            <div className="flex-1 min-w-[180px]">
+              <Label className="mb-2 text-white">Semester</Label>
+              <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+                <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                  <SelectValue placeholder="All Semesters" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Semesters</SelectItem>
+                  {allSemesters.map(semester => (
+                    <SelectItem key={`${semester.branchName}-${semester.id}`} value={semester.id}>
+                      {semester.name} ({semester.branchName})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Tag Filter */}
+            <div className="flex-1 min-w-[180px]">
+              <Label className="mb-2 text-white">Tag</Label>
+              <Select value={selectedTag} onValueChange={setSelectedTag}>
+                <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                  <SelectValue placeholder="All Tags" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Tags</SelectItem>
+                  {allTags.map(tag => (
+                    <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Reset Button */}
+            <div className="flex items-end">
+              <Button type="button" variant="outline" size="sm" className="w-full md:w-auto" onClick={() => { setSearchTerm(''); setSelectedBranch('all'); setSelectedSemester('all'); setSelectedTag('all'); }}>
+                Reset
+              </Button>
+            </div>
+          </form>
+          {/* Active Filters Badges */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {selectedBranch !== 'all' && <Badge variant="secondary">Branch: {subjectsData.branches.find(b => b.id === selectedBranch)?.name}</Badge>}
+            {selectedSemester !== 'all' && <Badge variant="secondary">Semester: {allSemesters.find(s => s.id === selectedSemester)?.name}</Badge>}
+            {selectedTag !== 'all' && <Badge variant="secondary">Tag: {selectedTag}</Badge>}
+            {searchTerm && <Badge variant="secondary">Search: {searchTerm}</Badge>}
           </div>
-        </div>
+        </Card>
 
         {/* Academic Branches Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col gap-6 mt-10 mb-14">
           {subjectsData.branches.map(branch => (
-            <Card key={branch.id} className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-colors">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-blue-400" />
-                  {branch.name}
-                </CardTitle>
-                <CardDescription className="text-gray-400">
-                  {branch.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <Calendar className="w-4 h-4" />
-                    {branch.semesters.length} Semesters
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
-                    <BookOpen className="w-4 h-4" />
-                    {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
-                  </div>
-                  {branch.brochure && (
-                    <a
-                      href={branch.brochure}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 mt-2 text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      <FileText className="w-4 h-4" />
-                      View Brochure
-                    </a>
-                  )}
-                </div>
+            <Card
+              key={branch.id}
+              className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]"
+            >
+              <CardContent className="p-8">
+          <div className="space-y-6">
+            {/* Header with Title */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 space-y-3">
+                <h3 className="text-2xl font-bold text-white leading-tight">{branch.name}</h3>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="text-gray-300 text-lg leading-relaxed">
+              {branch.description}
+            </p>
+
+            {/* Semesters and Subjects Info */}
+            <div className="flex items-center gap-6 text-gray-400">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-blue-400" />
+                <span className="font-medium">{branch.semesters.length} Semesters</span>
+              </div>
+              <div className="text-gray-500">•</div>
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-purple-400" />
+                <span className="font-medium">
+            {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
+                </span>
+              </div>
+            </div>
+
+            {/* Brochure Link */}
+            {branch.brochure && (
+              <div className="pt-4 border-t border-gray-800">
+                <a
+            href={branch.brochure}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-3 text-blue-400 hover:text-blue-300 transition-colors"
+                >
+            <FileText className="w-4 h-4" />
+            View Brochure
+                </a>
+              </div>
+            )}
+          </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
 
         {/* Results */}
         <div className="space-y-6">
@@ -199,13 +256,20 @@ const SubjectsPage = () => {
             Found {filteredSubjects.length} subjects
           </h2>
 
-          {/* Subject Cards */}
-          <div className="space-y-6">
-            {filteredSubjects.map(subject => (
-              <SubjectCard
-                key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
-                subject={subject}
-              />
+          {/* Grouped Subject Cards by Semester */}
+          <div className="space-y-10">
+            {Object.entries(groupedBySemester).map(([semesterKey, subjects]) => (
+              <div key={semesterKey}>
+                <h3 className="text-xl font-bold text-blue-300 mb-4">{semesterKey}</h3>
+                <div className="space-y-4">
+                  {subjects.map(subject => (
+                    <SubjectCard
+                      key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
+                      subject={subject}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 

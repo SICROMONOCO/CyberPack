@@ -243,7 +243,7 @@ const AboutPage = () => {
                 <div className="flex flex-col items-center text-center max-w-sm mb-8">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 overflow-hidden">
                   <img
-                  src={`${import.meta.env.BASE_URL || '/'}icon 1.jpg`}
+                  src="https://raw.githubusercontent.com/SICROMONOCO/CyberPack/refs/heads/main/icon%201.jpg"
                   alt="Bilal's profile"
                   className="w-20 h-20 rounded-full object-cover border-4 border-blue-500 shadow-lg"
                   />
@@ -265,8 +265,12 @@ const AboutPage = () => {
                 </div>
                 {/* IXO Intelligence Group */}
                 <div className="flex flex-col items-center text-center max-w-xs">
-                <div className="w-14 h-14 bg-gradient-to-tr from-purple-700 to-blue-700 rounded-full flex items-center justify-center mb-2 shadow-lg">
-                  <Shield size={22} className="text-white" />
+                <div className="w-14 h-14 bg-gradient-to-tr from-purple-700 to-blue-700 rounded-full flex items-center justify-center mb-2 shadow-lg overflow-hidden">
+                  <img
+                  src="https://drive.google.com/file/d/1hOVRlZKdn5fIkbReCVTQoLh2d8ePnuiB/view"
+                  alt="IXO Intelligence Group"
+                  className="w-12 h-12 object-cover rounded-full"
+                  />
                 </div>
                 <span className="text-lg font-bold text-purple-300 tracking-widest mb-1" style={{ letterSpacing: '0.18em' }}>
                   IXO Intelligence Group

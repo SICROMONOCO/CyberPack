@@ -3,9 +3,12 @@ import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { type Branch } from '@/data/mockResourcesData';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 // Simplified types for props
+type Branch = { id: string; name: string };
 type Semester = { id: string; name: string };
 type Subject = { id: string; title: string };
 
@@ -48,101 +51,138 @@ const ResourceFilters = ({
   semesters,
   subjects,
 }: ResourceFiltersProps) => (
-  <Card className="bg-gray-900 border-gray-800">
-    <CardContent className="p-6">
-      <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder="Search resources by title, description, keywords, or author..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-          <Select value={selectedBranch} onValueChange={handleBranchChange}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="All Branches" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="all">All Branches</SelectItem>
-              {branches.map(branch => (
-                <SelectItem key={branch.id} value={branch.id}>
-                  {branch.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedSemester} onValueChange={handleSemesterChange} disabled={selectedBranch === 'all'}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="All Semesters" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="all">All Semesters</SelectItem>
-              {semesters.map(semester => (
-                <SelectItem key={semester.id} value={semester.id}>
-                  {semester.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={selectedSemester === 'all'}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="All Subjects" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="all">All Subjects</SelectItem>
-              {subjects.map(subject => (
-                <SelectItem key={subject.id} value={subject.id}>
-                  {subject.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={filterType} onValueChange={setFilterType}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="pdf">PDF</SelectItem>
-              <SelectItem value="document">Document</SelectItem>
-              <SelectItem value="presentation">Presentation</SelectItem>
-              <SelectItem value="video">Video</SelectItem>
-              <SelectItem value="link">Link</SelectItem>
-              <SelectItem value="image">Image</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="date_added">Date Added</SelectItem>
-              <SelectItem value="title">Title</SelectItem>
-              <SelectItem value="type">Type</SelectItem>
-              <SelectItem value="author">Author</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as 'asc' | 'desc')}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="Order" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="desc">Newest First</SelectItem>
-              <SelectItem value="asc">Oldest First</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+  <Card className="bg-gray-950/80 border border-gray-800 shadow-lg p-6 md:p-10 mb-8">
+    <h2 className="text-2xl font-bold text-blue-400 mb-6">Filter Resources</h2>
+    <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-wrap">
+      {/* Search */}
+      <div className="flex-1 min-w-[180px]">
+        <Label htmlFor="resource-search" className="mb-2 text-white">Search</Label>
+        <Input
+          id="resource-search"
+          placeholder="Search by resource title, description, keywords, or author..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all rounded-lg shadow-sm"
+        />
       </div>
-    </CardContent>
+      {/* Branch Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Branch</Label>
+        <Select value={selectedBranch} onValueChange={handleBranchChange}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="All Branches" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Branches</SelectItem>
+            {branches.map(branch => (
+              <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Semester Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Semester</Label>
+        <Select value={selectedSemester} onValueChange={handleSemesterChange} disabled={selectedBranch === 'all'}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="All Semesters" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Semesters</SelectItem>
+            {semesters.map(semester => (
+              <SelectItem key={semester.id} value={semester.id}>{semester.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Subject Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Subject</Label>
+        <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={selectedSemester === 'all'}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="All Subjects" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Subjects</SelectItem>
+            {subjects.map(subject => (
+              <SelectItem key={subject.id} value={subject.id}>{subject.title}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Type Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Type</Label>
+        <Select value={filterType} onValueChange={setFilterType}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="All Types" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Types</SelectItem>
+            <SelectItem value="pdf">PDF</SelectItem>
+            <SelectItem value="document">Document</SelectItem>
+            <SelectItem value="presentation">Presentation</SelectItem>
+            <SelectItem value="video">Video</SelectItem>
+            <SelectItem value="link">Link</SelectItem>
+            <SelectItem value="image">Image</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Sort By Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Sort By</Label>
+        <Select value={sortBy} onValueChange={setSortBy}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="date_added">Date Added</SelectItem>
+            <SelectItem value="title">Title</SelectItem>
+            <SelectItem value="type">Type</SelectItem>
+            <SelectItem value="author">Author</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Sort Order Filter */}
+      <div className="flex-1 min-w-[180px]">
+        <Label className="mb-2 text-white">Order</Label>
+        <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as 'asc' | 'desc')}>
+          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+            <SelectValue placeholder="Order" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="desc">Newest First</SelectItem>
+            <SelectItem value="asc">Oldest First</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {/* Reset Button */}
+      <div className="flex items-end">
+        <Button type="button" variant="outline" size="sm" className="w-full md:w-auto" onClick={() => {
+          setSearchTerm('');
+          handleBranchChange('all');
+          handleSemesterChange('all');
+          setSelectedSubject('all');
+          setFilterType('all');
+          setSortBy('date_added');
+          setSortOrder('desc');
+        }}>
+          Reset
+        </Button>
+      </div>
+    </form>
+    {/* Active Filters Badges (optional, for consistency) */}
+    {/*
+    <div className="flex flex-wrap gap-2 mt-4">
+      {selectedBranch !== 'all' && <Badge variant="secondary">Branch: {branches.find(b => b.id === selectedBranch)?.name}</Badge>}
+      {selectedSemester !== 'all' && <Badge variant="secondary">Semester: {semesters.find(s => s.id === selectedSemester)?.name}</Badge>}
+      {selectedSubject !== 'all' && <Badge variant="secondary">Subject: {subjects.find(s => s.id === selectedSubject)?.title}</Badge>}
+      {filterType !== 'all' && <Badge variant="secondary">Type: {filterType}</Badge>}
+      {sortBy !== 'date_added' && <Badge variant="secondary">Sort: {sortBy}</Badge>}
+      {sortOrder !== 'desc' && <Badge variant="secondary">Order: {sortOrder === 'asc' ? 'Oldest' : 'Newest'}</Badge>}
+      {searchTerm && <Badge variant="secondary">Search: {searchTerm}</Badge>}
+    </div>
+    */}
   </Card>
 );
 
