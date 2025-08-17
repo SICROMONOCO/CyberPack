@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ResourceStats from './ResourceStats';
 import ResourceFilters from './ResourceFilters';
+import ResourceFiltersMobile from './ResourceFiltersMobile';
 import ResourceList from './ResourceList';
 import { getBranchesWithSemestersAndSubjects, getResourcesForSubject } from '@/integrations/supabase/supabaseAcademicApi';
 
@@ -156,9 +157,14 @@ const ResourcesPage = () => {
   const stats = useMemo(() => {
     const total = allResources.length;
     const typeCount = allResources.reduce((acc: Record<string, number>, resource: any) => {
-      acc[resource.type] = (acc[resource.type] || 0) + 1;
+      const type = resource.type || 'unknown';
+      acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {});
+    // Ensure all types are present in stats
+    ['pdf','document','presentation','video','link','image','exams','disabled'].forEach(type => {
+      if (!(type in typeCount)) typeCount[type] = 0;
+    });
     return { total, typeCount };
   }, [allResources]);
 
@@ -172,37 +178,63 @@ const ResourcesPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      <div className="container mx-auto p-8 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
         {/* Header */}
         <div className="space-y-4">
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Resources Library
           </h1>
-          <p className="text-xl text-gray-300 leading-relaxed">
+          <p className="text-sm sm:text-lg text-gray-300 leading-relaxed">
             Access study materials, documents, and learning resources organized by subject
           </p>
         </div>
 
         <ResourceStats stats={stats} />
-        <ResourceFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedBranch={selectedBranch}
-          handleBranchChange={handleBranchChange}
-          selectedSemester={selectedSemester}
-          handleSemesterChange={handleSemesterChange}
-          selectedSubject={selectedSubject}
-          setSelectedSubject={setSelectedSubject}
-          filterType={filterType}
-          setFilterType={setFilterType}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          branches={branches}
-          semesters={semesters}
-          subjects={subjects}
-        />
+        <div className="md:col-span-3 lg:col-span-2">
+          {/* Desktop filters: hidden on small screens */}
+          <div className="hidden md:block">
+            <ResourceFilters
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              selectedBranch={selectedBranch}
+              handleBranchChange={handleBranchChange}
+              selectedSemester={selectedSemester}
+              handleSemesterChange={handleSemesterChange}
+              selectedSubject={selectedSubject}
+              setSelectedSubject={setSelectedSubject}
+              filterType={filterType}
+              setFilterType={setFilterType}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              branches={branches}
+              semesters={semesters}
+              subjects={subjects}
+            />
+          </div>
+
+          {/* Mobile filters: floating button + sheet */}
+          <ResourceFiltersMobile
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedBranch={selectedBranch}
+            handleBranchChange={handleBranchChange}
+            selectedSemester={selectedSemester}
+            handleSemesterChange={handleSemesterChange}
+            selectedSubject={selectedSubject}
+            setSelectedSubject={setSelectedSubject}
+            filterType={filterType}
+            setFilterType={setFilterType}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            branches={branches}
+            semesters={semesters}
+            subjects={subjects}
+          />
+        </div>
         <ResourceList
           resources={filteredResources}
           hasActiveFilters={hasActiveFilters}

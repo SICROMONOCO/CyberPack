@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { BookOpen, Tag, User, Award } from 'lucide-react';
+import { BookOpen, Tag, User, Award, Copy, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { toast } from '@/hooks/use-toast';
 
 interface SubjectCardProps {
   subject: {
@@ -35,68 +36,84 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
     }
   };
 
+  const handleCopyCode = async () => {
+    if (!subject.code) return;
+    try {
+      await navigator.clipboard.writeText(subject.code);
+  toast({ title: 'Code copied', description: 'Subject code copied to clipboard.' });
+    } catch (e) {
+  toast({ title: 'Copy failed', description: 'Could not copy subject code.' });
+    }
+  };
+
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]">
-      <CardContent className="p-8">
-        <div className="space-y-6">
-          {/* Header with Title and Tag */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 space-y-3">
-              {subject.code && (
-                <div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-mono rounded-md">
-                  {subject.code}
-                </div>
-              )}
-              <h3 className="text-2xl font-bold text-white leading-tight">{subject.title}</h3>
-            </div>
-            <Badge className={`${getTagColor(subject.tag)} px-4 py-2 text-sm font-medium`}>
-              <Tag className="w-4 h-4 mr-2" />
-              {subject.tag}
-            </Badge>
+    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01]">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="inline-flex items-center justify-center rounded-lg bg-indigo-700 w-12 h-12 flex-shrink-0">
+            <BookOpen className="w-6 h-6 text-white" />
           </div>
-          
-          {/* Description */}
-          <p className="text-gray-300 text-lg leading-relaxed">
-            {subject.description}
-          </p>
-          
-          {/* Branch and Semester Info */}
-          <div className="flex items-center gap-6 text-gray-400">
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-blue-400" />
-              <span className="font-medium">{subject.branchName}</span>
-            </div>
-            <div className="text-gray-500">•</div>
-            <span className="font-medium">{subject.semesterName}</span>
-          </div>
-          
-          {/* Additional Info */}
-          {(subject.instructor || (subject.prerequisites && subject.prerequisites.length > 0)) && (
-            <div className="pt-4 border-t border-gray-800 space-y-3">
-              {subject.instructor && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <User className="w-5 h-5 text-green-400" />
-                  <span><strong>Instructor:</strong> {subject.instructor}</span>
+
+          <div className="flex-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-white">{subject.title}</h3>
+
+                <div className="mt-2 flex items-center gap-3 text-sm text-gray-400 flex-wrap">
+                  {subject.code && (
+                    <span className="inline-flex items-center gap-2 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 font-mono">
+                      {subject.code}
+                      <button onClick={handleCopyCode} className="ml-2 p-1 rounded text-gray-400 hover:text-gray-200" aria-label="Copy subject code">
+                        <Copy className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+
+                  {subject.tag && (
+                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${getTagColor(subject.tag)} `}>
+                      {subject.tag.toUpperCase()}
+                    </span>
+                  )}
+
+                  <span className="text-gray-500">• {subject.creditHours} C</span>
                 </div>
-              )}
-              
-              {subject.prerequisites && subject.prerequisites.length > 0 && (
-                <div className="flex items-start gap-3 text-gray-300">
-                  <Award className="w-5 h-5 text-yellow-400 mt-0.5" />
-                  <div>
-                    <strong>Prerequisites:</strong>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {subject.prerequisites.map((prereq, index) => (
-                        <Badge key={index} variant="outline" className="border-gray-600 text-gray-400 bg-gray-800/50">
-                          {prereq}
-                        </Badge>
-                      ))}
-                    </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {/* Potential actions could go here */}
+              </div>
+            </div>
+
+            {subject.description && (
+              <p className="mt-3 text-sm sm:text-sm text-gray-300 leading-relaxed line-clamp-4">{subject.description}</p>
+            )}
+
+            {subject.prerequisites && subject.prerequisites.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {subject.prerequisites.map((p, i) => (
+                  <Badge key={i} variant="outline" className="text-xs border-gray-600 text-gray-400">{p}</Badge>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm text-gray-400 gap-3">
+              <div className="flex items-center gap-4 flex-wrap">
+                {subject.instructor && (
+                  <div className="inline-flex items-center gap-2">
+                    <User className="w-4 h-4 text-green-400" />
+                    <span>{subject.instructor}</span>
                   </div>
+                )}
+
+                <div className="inline-flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{subject.semesterName} • {subject.branchName}</span>
                 </div>
-              )}
+              </div>
+
+              <div className="text-gray-400 text-xs"></div>
             </div>
-          )}
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -37,6 +37,28 @@ const ResourceStats = ({ stats }: ResourceStatsProps) => (
         </div>
       </CardContent>
     </Card>
+    <Card className="bg-gray-900 border-gray-800">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-400 text-sm">Exams</p>
+            <p className="text-2xl font-bold text-white">{stats.typeCount.exams || 0}</p>
+          </div>
+          <Upload className="w-8 h-8 text-yellow-400" />
+        </div>
+      </CardContent>
+    </Card>
+    <Card className="bg-gray-900 border-gray-800">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-400 text-sm">Disabled</p>
+            <p className="text-2xl font-bold text-white">{stats.typeCount.disabled || 0}</p>
+          </div>
+          <Upload className="w-8 h-8 text-gray-400 opacity-60" />
+        </div>
+      </CardContent>
+    </Card>
     
     <Card className="bg-gray-900 border-gray-800">
       <CardContent className="p-4">

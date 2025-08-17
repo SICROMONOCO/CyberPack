@@ -35,7 +35,7 @@ const SupportPage = () => {
       id: '3',
       category: 'Resources',
       question: 'What types of resources are available on CyberPack?',
-      answer: 'CyberPack offers various resource types including PDF documents, presentations, video tutorials, external educational links, lab manuals, practice exercises, and reference materials. All resources are categorized by subject and semester for easy navigation.'
+      answer: 'CyberPack offers various resource types including PDF documents, presentations, video tutorials, external educational links, lab manuals, practice exercises, reference materials, exams, and disabled (not yet available) resources. All resources are categorized by subject and semester for easy navigation.'
     },
     {
       id: '4',
