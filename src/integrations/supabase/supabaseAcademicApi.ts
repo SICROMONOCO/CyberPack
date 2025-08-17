@@ -24,9 +24,8 @@ export async function getResourcesForSubject(subjectId: string) {
   const { data, error } = await supabase
     .from("resources")
     .select("*")
-    .eq("subject_id", subjectId)
-    .eq("status", "active");
-  
+    .eq("subject_id", subjectId);
+  // No status filter, so 'disabled' and others are included
   if (error) throw error;
   return data || [];
 }

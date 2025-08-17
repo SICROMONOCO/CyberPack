@@ -3,6 +3,7 @@ import { BookOpen, FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
+import ProgramCard from './ProgramCard';
 import { getBranchesWithSemestersAndSubjects } from "@/integrations/supabase/supabaseAcademicApi";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -51,6 +52,19 @@ const SubjectsPage = () => {
       setLoading(false);
     };
     fetchData();
+  }, []);
+
+  // Read query param `branch` to preselect a branch when navigating from ProgramCard
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const branchParam = params.get('branch');
+      if (branchParam) {
+        setSelectedBranch(branchParam);
+      }
+    } catch (e) {
+      // ignore
+    }
   }, []);
 
   const filteredSubjects = subjectsData.branches.flatMap(branch =>
@@ -196,56 +210,7 @@ const SubjectsPage = () => {
         {/* Academic Branches Overview */}
         <div className="flex flex-col gap-6 mt-10 mb-14">
           {subjectsData.branches.map(branch => (
-            <Card
-              key={branch.id}
-              className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.02]"
-            >
-              <CardContent className="p-8">
-          <div className="space-y-6">
-            {/* Header with Title */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 space-y-3">
-                <h3 className="text-2xl font-bold text-white leading-tight">{branch.name}</h3>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-gray-300 text-lg leading-relaxed">
-              {branch.description}
-            </p>
-
-            {/* Semesters and Subjects Info */}
-            <div className="flex items-center gap-6 text-gray-400">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-400" />
-                <span className="font-medium">{branch.semesters.length} Semesters</span>
-              </div>
-              <div className="text-gray-500">•</div>
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-purple-400" />
-                <span className="font-medium">
-            {branch.semesters.reduce((total, sem) => total + sem.subjects.length, 0)} Subjects
-                </span>
-              </div>
-            </div>
-
-            {/* Brochure Link */}
-            {branch.brochure && (
-              <div className="pt-4 border-t border-gray-800">
-                <a
-            href={branch.brochure}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-3 text-blue-400 hover:text-blue-300 transition-colors"
-                >
-            <FileText className="w-4 h-4" />
-            View Brochure
-                </a>
-              </div>
-            )}
-          </div>
-              </CardContent>
-            </Card>
+            <ProgramCard key={branch.id} branch={branch} />
           ))}
         </div>
 

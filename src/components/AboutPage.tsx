@@ -267,7 +267,7 @@ const AboutPage = () => {
                 <div className="flex flex-col items-center text-center max-w-xs">
                 <div className="w-14 h-14 bg-gradient-to-tr from-purple-700 to-blue-700 rounded-full flex items-center justify-center mb-2 shadow-lg overflow-hidden">
                   <img
-                  src="https://drive.google.com/file/d/1hOVRlZKdn5fIkbReCVTQoLh2d8ePnuiB/view"
+                  src="https://github.com/SICROMONOCO/CyberPack/blob/main/IXO.png?raw=true"
                   alt="IXO Intelligence Group"
                   className="w-12 h-12 object-cover rounded-full"
                   />

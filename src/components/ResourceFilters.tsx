@@ -51,25 +51,25 @@ const ResourceFilters = ({
   semesters,
   subjects,
 }: ResourceFiltersProps) => (
-  <Card className="bg-gray-950/80 border border-gray-800 shadow-lg p-6 md:p-10 mb-8">
+  <Card className="bg-gray-950/80 border border-gray-800 shadow-lg p-4 sm:p-6 md:p-10 mb-8">
     <h2 className="text-2xl font-bold text-blue-400 mb-6">Filter Resources</h2>
-    <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 flex-wrap">
+    <form className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 flex-wrap">
       {/* Search */}
-      <div className="flex-1 min-w-[180px]">
+  <div className="flex-1 min-w-[180px]">
         <Label htmlFor="resource-search" className="mb-2 text-white">Search</Label>
         <Input
           id="resource-search"
           placeholder="Search by resource title, description, keywords, or author..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all rounded-lg shadow-sm"
+          className="bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all rounded-lg shadow-sm h-12"
         />
       </div>
       {/* Branch Filter */}
-      <div className="flex-1 min-w-[180px]">
+  <div className="flex-1 min-w-[180px]">
         <Label className="mb-2 text-white">Branch</Label>
         <Select value={selectedBranch} onValueChange={handleBranchChange}>
-          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+    <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm h-12">
             <SelectValue placeholder="All Branches" />
           </SelectTrigger>
           <SelectContent>
@@ -81,10 +81,10 @@ const ResourceFilters = ({
         </Select>
       </div>
       {/* Semester Filter */}
-      <div className="flex-1 min-w-[180px]">
+  <div className="flex-1 min-w-[180px]">
         <Label className="mb-2 text-white">Semester</Label>
         <Select value={selectedSemester} onValueChange={handleSemesterChange} disabled={selectedBranch === 'all'}>
-          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+    <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm h-12">
             <SelectValue placeholder="All Semesters" />
           </SelectTrigger>
           <SelectContent>
@@ -96,10 +96,10 @@ const ResourceFilters = ({
         </Select>
       </div>
       {/* Subject Filter */}
-      <div className="flex-1 min-w-[180px]">
+  <div className="flex-1 min-w-[180px]">
         <Label className="mb-2 text-white">Subject</Label>
         <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={selectedSemester === 'all'}>
-          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+    <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm h-12">
             <SelectValue placeholder="All Subjects" />
           </SelectTrigger>
           <SelectContent>
@@ -111,10 +111,10 @@ const ResourceFilters = ({
         </Select>
       </div>
       {/* Type Filter */}
-      <div className="flex-1 min-w-[180px]">
+  <div className="flex-1 min-w-[180px]">
         <Label className="mb-2 text-white">Type</Label>
         <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+    <SelectTrigger className="w-full bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm h-12">
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent>
@@ -125,6 +125,8 @@ const ResourceFilters = ({
             <SelectItem value="video">Video</SelectItem>
             <SelectItem value="link">Link</SelectItem>
             <SelectItem value="image">Image</SelectItem>
+            <SelectItem value="exams">Exams</SelectItem>
+            <SelectItem value="disabled">Disabled</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -158,7 +160,7 @@ const ResourceFilters = ({
       </div>
       {/* Reset Button */}
       <div className="flex items-end">
-        <Button type="button" variant="outline" size="sm" className="w-full md:w-auto" onClick={() => {
+        <Button type="button" variant="outline" size="sm" className="w-full md:w-auto h-12" onClick={() => {
           setSearchTerm('');
           handleBranchChange('all');
           handleSemesterChange('all');
