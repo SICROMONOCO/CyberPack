@@ -1,28 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Sidebar from '@/components/Sidebar';
+import BottomBar from '@/components/BottomBar';
 import HomePage from '@/components/HomePage';
 import SubjectsPage from '@/components/SubjectsPage';
 import ResourcesPage from '@/components/ResourcesPage';
 import SupportPage from '@/pages/SupportPage';
 import AboutPage from '@/components/AboutPage';
+import useMobile from '@/hooks/use-mobile';
 
 const Index = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState('home');
-
-  // Handle mobile responsiveness
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isMobile = useMobile();
 
   const handleToggle = () => {
     setIsCollapsed(!isCollapsed);
@@ -30,9 +20,6 @@ const Index = () => {
 
   const handleItemClick = (item: string) => {
     setActiveItem(item);
-    if (window.innerWidth < 768) {
-      setIsCollapsed(true);
-    }
   };
 
   const renderContent = () => {
@@ -53,26 +40,33 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex overflow-hidden">
-      <Sidebar
-        isCollapsed={isCollapsed}
-        onToggle={handleToggle}
-        activeItem={activeItem}
-        onItemClick={handleItemClick}
-      />
+    <div className="min-h-screen bg-gray-950 flex">
+      {!isMobile && (
+        <Sidebar
+          isCollapsed={isCollapsed}
+          onToggle={handleToggle}
+          activeItem={activeItem}
+          onItemClick={handleItemClick}
+        />
+      )}
       
       <main
         className={cn(
           "flex-1 transition-all duration-300 overflow-auto",
-          isCollapsed ? "ml-16" : "ml-64",
-          "md:ml-16 md:data-[collapsed=false]:ml-64"
+          isMobile ? "pb-16" : (isCollapsed ? "ml-20" : "ml-64")
         )}
-        data-collapsed={isCollapsed}
       >
         <div className="min-h-full">
           {renderContent()}
         </div>
       </main>
+
+      {isMobile && (
+        <BottomBar
+          activeItem={activeItem}
+          onItemClick={handleItemClick}
+        />
+      )}
     </div>
   );
 };
