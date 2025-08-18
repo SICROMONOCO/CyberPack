@@ -32,10 +32,7 @@ const Sidebar = ({ isCollapsed, onToggle, activeItem, onItemClick }: SidebarProp
       <div className={cn(
         "fixed left-0 top-0 h-full bg-gray-900 border-r border-gray-700 transition-all duration-300 z-50",
         "shadow-lg backdrop-blur-sm",
-        isCollapsed ? "w-30" : "w-64",
-        // Mobile responsiveness
-        "md:translate-x-0",
-        isCollapsed ? "translate-x-0" : "translate-x-0"
+        isCollapsed ? "w-20" : "w-64"
       )}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-900/95 backdrop-blur-sm">
