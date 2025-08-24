@@ -168,7 +168,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
             {/* Description */}
             {resource.description && (
-              <p className="mt-3 text-sm sm:text-sm text-gray-300 leading-relaxed line-clamp-4">
+              <p className="mt-3 text-sm sm:text-sm text-gray-300 leading-relaxed">
                 {resource.description}
               </p>
             )}

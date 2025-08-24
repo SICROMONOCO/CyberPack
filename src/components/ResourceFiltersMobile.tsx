@@ -36,35 +36,38 @@ const ResourceFiltersMobile = (props: Props) => {
 
   return (
     <>
-      {/* Floating button - only on mobile */}
-      <div className="fixed bottom-4 right-4 z-50 md:hidden">
-        <Button onClick={() => setOpen(true)} className="rounded-full px-4 py-3 shadow-lg" variant="default">
+      {/* Floating button - only on mobile, above BottomBar/FooterBar */}
+      <div
+        className="fixed z-50 md:hidden left-1/2 -translate-x-1/2 flex justify-center w-auto"
+        style={{ bottom: '4.5rem' }}
+      >
+        <Button
+          onClick={() => setOpen(true)}
+          className="rounded-full px-6 py-3 shadow-lg bg-blue-600 hover:bg-blue-700 text-white text-base font-semibold"
+          variant="default"
+        >
           Filters
         </Button>
       </div>
 
-      {/* Sheet / modal */}
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
+        <div className="fixed inset-0 z-[999] md:hidden flex items-center justify-center">
           <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-
-          <div className="absolute bottom-0 left-0 right-0 bg-gray-900 rounded-t-xl p-4 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Filters</h3>
+          <div className="relative w-full max-w-xs mx-auto bg-gray-900 rounded-xl p-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-800">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-semibold text-white">Filters</h3>
               <Button variant="outline" size="sm" onClick={() => setOpen(false)}>Close</Button>
             </div>
-
             <Card className="bg-transparent border-0 p-0">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <Label className="mb-2 text-white">Search</Label>
-                  <Input value={props.searchTerm} onChange={(e) => props.setSearchTerm(e.target.value)} className="h-12 bg-gray-900" />
+                  <Label className="mb-1 text-white text-xs">Search</Label>
+                  <Input value={props.searchTerm} onChange={(e) => props.setSearchTerm(e.target.value)} className="h-9 bg-gray-900 text-xs" />
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Branch</Label>
+                  <Label className="mb-1 text-white text-xs">Branch</Label>
                   <Select value={props.selectedBranch} onValueChange={props.handleBranchChange}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900" aria-label="Branch">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs" aria-label="Branch">
                       <SelectValue placeholder="All Branches" />
                     </SelectTrigger>
                     <SelectContent>
@@ -73,11 +76,10 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Semester</Label>
+                  <Label className="mb-1 text-white text-xs">Semester</Label>
                   <Select value={props.selectedSemester} onValueChange={props.handleSemesterChange}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900" aria-label="Semester">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs" aria-label="Semester">
                       <SelectValue placeholder="All Semesters" />
                     </SelectTrigger>
                     <SelectContent>
@@ -86,11 +88,10 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Subject</Label>
+                  <Label className="mb-1 text-white text-xs">Subject</Label>
                   <Select value={props.selectedSubject} onValueChange={props.setSelectedSubject}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900" aria-label="Subject">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs" aria-label="Subject">
                       <SelectValue placeholder="All Subjects" />
                     </SelectTrigger>
                     <SelectContent>
@@ -99,11 +100,10 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Type</Label>
+                  <Label className="mb-1 text-white text-xs">Type</Label>
                   <Select value={props.filterType} onValueChange={props.setFilterType}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
                     <SelectContent>
@@ -119,11 +119,10 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Sort By</Label>
+                  <Label className="mb-1 text-white text-xs">Sort By</Label>
                   <Select value={props.sortBy} onValueChange={props.setSortBy}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
@@ -134,11 +133,10 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
-                  <Label className="mb-2 text-white">Order</Label>
+                  <Label className="mb-1 text-white text-xs">Order</Label>
                   <Select value={props.sortOrder} onValueChange={(v) => props.setSortOrder(v as 'asc' | 'desc')}>
-                    <SelectTrigger className="w-full h-12 bg-gray-900">
+                    <SelectTrigger className="w-full h-9 bg-gray-900 text-xs">
                       <SelectValue placeholder="Order" />
                     </SelectTrigger>
                     <SelectContent>
@@ -147,9 +145,8 @@ const ResourceFiltersMobile = (props: Props) => {
                     </SelectContent>
                   </Select>
                 </div>
-
-                <div className="flex gap-3 pt-2">
-                  <Button variant="outline" className="flex-1 h-12" onClick={() => {
+                <div className="flex gap-2 pt-1">
+                  <Button variant="outline" className="flex-1 h-9 text-xs" onClick={() => {
                     props.setSearchTerm('');
                     props.handleBranchChange('all');
                     props.handleSemesterChange('all');
@@ -158,7 +155,7 @@ const ResourceFiltersMobile = (props: Props) => {
                     props.setSortBy('date_added');
                     props.setSortOrder('desc');
                   }}>Reset</Button>
-                  <Button className="flex-1 h-12" onClick={applyAndClose}>Apply</Button>
+                  <Button className="flex-1 h-9 text-xs" onClick={applyAndClose}>Apply</Button>
                 </div>
               </div>
             </Card>
