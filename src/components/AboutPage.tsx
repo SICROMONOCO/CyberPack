@@ -8,7 +8,7 @@ const AboutPage = () => {
     {
       name: 'LXO Group',
       role: 'Founder & Lead Developer',
-      description: 'Cybersecurity student passionate about creating accessible educational resources',
+      description: 'student passionate about creating optimized solutions for real problems',
       icon: Shield
     }
   ];
@@ -258,7 +258,9 @@ const AboutPage = () => {
                   Bilal
                   </a>
                 </h3>
-                <Badge className="bg-blue-600 text-blue-100 mb-3">Student & Creator</Badge>
+                <Badge className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0 mb-3">
+                  Student & Creator
+                </Badge>
                 <p className="text-gray-400 mb-6">
                   Just a cybersecurity student at FPO UIZ, Morocco, who wanted to make a difference for myself and others by organizing and sharing resources.
                 </p>
@@ -275,13 +277,34 @@ const AboutPage = () => {
                 <span className="text-lg font-bold text-purple-300 tracking-widest mb-1" style={{ letterSpacing: '0.18em' }}>
                   IXO Intelligence Group
                 </span>
-                <span className="block w-10 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-2"></span>
+               <span className="block w-10 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-2"></span>
                 <span className="text-gray-400 text-sm italic px-4 text-center">
                   A personal initiative and name representing a spirit of independent thinkers creating interactive and intellectual content together.
                 </span>
                 </div>
               </div>
             </CardContent>
+        </Card>
+
+        {/* GitHub Repo Card */}
+        <Card className="bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 border-2 border-blue-700 shadow-xl">
+          <CardContent className="p-8 flex flex-col items-center text-center gap-6">
+            <div className="flex flex-col items-center gap-2">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" className="mx-auto mb-2"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.34-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.338 4.695-4.566 4.944.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z" fill="#60A5FA"/></svg>
+              <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">View the Source Code</h2>
+              <p className="text-gray-300 max-w-xl text-base sm:text-lg">This web app is open source! Explore the code, contribute, or star the project on GitHub. Your feedback and contributions are welcome.</p>
+            </div>
+            <a
+              href="https://github.com/SICROMONOCO/CyberPack"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-colors text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+              aria-label="View GitHub Repository"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.021c0 4.428 2.865 8.184 6.839 9.504.5.092.682-.217.682-.483 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.34-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.987 1.029-2.687-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.295 2.748-1.025 2.748-1.025.546 1.378.202 2.397.1 2.65.64.7 1.028 1.594 1.028 2.687 0 3.847-2.338 4.695-4.566 4.944.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.749 0 .268.18.579.688.481C19.138 20.2 22 16.447 22 12.021 22 6.484 17.523 2 12 2Z" fill="#fff"/></svg>
+              GitHub Repository
+            </a>
+          </CardContent>
         </Card>
 
         {/* Future Vision */}

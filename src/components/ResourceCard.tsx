@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, ExternalLink, Calendar, FileText, Video, Link as LinkIcon, User, Tag, Copy, Clock, Globe, Eye } from 'lucide-react';
+import { Download, ExternalLink, Calendar, FileText, Video, Link as LinkIcon, User, Tag, Copy, Clock, Globe, Eye, BookOpen, Award } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +10,7 @@ interface ResourceCardProps {
     id: string;
     title: string;
     description: string;
-    type: 'pdf' | 'video' | 'link' | 'document' | 'presentation' | 'image' | 'exams' | 'disabled';
+    type: 'link' | 'courses' | 'project' | 'tp' | 'td' | 'disabled' | 'exams';
     url?: string;
     fileSize?: string;
     dateAdded: string;
@@ -18,26 +18,29 @@ interface ResourceCardProps {
     author?: string;
     keywords?: string[];
     language?: string;
-  subjectName?: string;
-  branchName?: string;
-  branchId?: string;
-  semesterName?: string;
-  semesterId?: string;
+    subjectName?: string;
+    branchName?: string;
+    branchId?: string;
+    semesterName?: string;
+    semesterId?: string;
   };
 }
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'pdf':
-      case 'document':
-      case 'presentation':
-      case 'exams':
-        return <FileText className="w-6 h-6" />;
-      case 'video':
-        return <Video className="w-6 h-6" />;
       case 'link':
         return <LinkIcon className="w-6 h-6" />;
+      case 'courses':
+        return <BookOpen className="w-6 h-6" />;
+      case 'project':
+        return <Award className="w-6 h-6" />;
+      case 'tp':
+        return <FileText className="w-6 h-6" />;
+      case 'td':
+        return <FileText className="w-6 h-6" />;
+      case 'exams':
+        return <FileText className="w-6 h-6" />;
       case 'disabled':
         return <FileText className="w-6 h-6 opacity-40" />;
       default:
@@ -47,17 +50,15 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'pdf':
-        return 'bg-red-600 text-red-100';
-      case 'video':
-        return 'bg-purple-600 text-purple-100';
       case 'link':
         return 'bg-blue-600 text-blue-100';
-      case 'document':
+      case 'courses':
         return 'bg-green-600 text-green-100';
-      case 'presentation':
+      case 'project':
+        return 'bg-purple-600 text-purple-100';
+      case 'tp':
         return 'bg-orange-600 text-orange-100';
-      case 'image':
+      case 'td':
         return 'bg-pink-600 text-pink-100';
       case 'exams':
         return 'bg-yellow-600 text-yellow-100';
@@ -177,12 +178,12 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
             {resource.keywords && resource.keywords.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {resource.keywords.slice(0, 6).map((k, i) => (
-                  <Badge key={i} variant="outline" className="text-xs border-gray-600 text-gray-400">
+                  <Badge key={i} className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">
                     {k}
                   </Badge>
                 ))}
                 {resource.keywords.length > 6 && (
-                  <Badge variant="outline" className="text-xs border-gray-600 text-gray-400">+{resource.keywords.length - 6}</Badge>
+                  <Badge className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">+{resource.keywords.length - 6}</Badge>
                 )}
               </div>
             )}
@@ -210,7 +211,19 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
 
               <div className="flex items-center gap-3 text-gray-400">
                 {resource.type !== 'disabled' && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-gray-800 text-gray-200">{resource.type.toUpperCase()}</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-gray-800 text-gray-200">
+                    {(() => {
+                      switch (resource.type) {
+                        case 'link': return 'Link';
+                        case 'courses': return 'Courses';
+                        case 'project': return 'Project';
+                        case 'tp': return 'TP';
+                        case 'td': return 'TD';
+                        case 'exams': return 'Exams';
+                        default: return resource.type;
+                      }
+                    })()}
+                  </span>
                 )}
                 {resource.type === 'link' && (
                   <a href={resource.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-gray-300">

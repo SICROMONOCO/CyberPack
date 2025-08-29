@@ -31,7 +31,11 @@ export type SupabaseBranch = {
   }[];
 };
 
-const SubjectsPage = () => {
+interface SubjectsPageProps {
+  onSubjectClick?: (subject: any) => void;
+}
+
+const SubjectsPage = ({ onSubjectClick }: SubjectsPageProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBranch, setSelectedBranch] = useState('all');
   const [selectedSemester, setSelectedSemester] = useState('all');
@@ -231,6 +235,7 @@ const SubjectsPage = () => {
                     <SubjectCard
                       key={`${subject.branchId}-${subject.semesterId}-${subject.id}`}
                       subject={subject}
+                      onClick={onSubjectClick}
                     />
                   ))}
                 </div>

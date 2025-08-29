@@ -5,11 +5,23 @@ import ResourceFiltersMobile from './ResourceFiltersMobile';
 import ResourceList from './ResourceList';
 import { getBranchesWithSemestersAndSubjects, getResourcesForSubject } from '@/integrations/supabase/supabaseAcademicApi';
 
-const ResourcesPage = () => {
+interface ResourcesPageProps {
+  subjectFilter?: { subjectId: string; branchId?: string; semesterId?: string } | null;
+}
+
+const ResourcesPage = ({ subjectFilter }: ResourcesPageProps) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState<string>('all');
-  const [selectedSemester, setSelectedSemester] = useState<string>('all');
-  const [selectedSubject, setSelectedSubject] = useState<string>('all');
+  const [selectedBranch, setSelectedBranch] = useState<string>(subjectFilter?.branchId || 'all');
+  const [selectedSemester, setSelectedSemester] = useState<string>(subjectFilter?.semesterId || 'all');
+  const [selectedSubject, setSelectedSubject] = useState<string>(subjectFilter?.subjectId || 'all');
+  // If subjectFilter changes, update filters accordingly
+  useEffect(() => {
+    if (subjectFilter) {
+      setSelectedBranch(subjectFilter.branchId || 'all');
+      setSelectedSemester(subjectFilter.semesterId || 'all');
+      setSelectedSubject(subjectFilter.subjectId || 'all');
+    }
+  }, [subjectFilter]);
   const [sortBy, setSortBy] = useState<string>('date_added');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filterType, setFilterType] = useState<string>('all');
@@ -190,32 +202,9 @@ const ResourcesPage = () => {
         </div>
 
         <ResourceStats stats={stats} />
-        <div className="md:col-span-3 lg:col-span-2">
-          {/* Desktop filters: hidden on small screens */}
-          <div className="hidden md:block">
-            <ResourceFilters
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              selectedBranch={selectedBranch}
-              handleBranchChange={handleBranchChange}
-              selectedSemester={selectedSemester}
-              handleSemesterChange={handleSemesterChange}
-              selectedSubject={selectedSubject}
-              setSelectedSubject={setSelectedSubject}
-              filterType={filterType}
-              setFilterType={setFilterType}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
-              branches={branches}
-              semesters={semesters}
-              subjects={subjects}
-            />
-          </div>
-
-          {/* Mobile filters: floating button + sheet */}
-          <ResourceFiltersMobile
+        {/* Always show inline ResourceFilters, like SubjectsPage, for all screen sizes */}
+        <div>
+          <ResourceFilters
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             selectedBranch={selectedBranch}

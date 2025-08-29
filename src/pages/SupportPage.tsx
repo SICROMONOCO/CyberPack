@@ -65,7 +65,7 @@ const SupportPage = () => {
       id: '8',
       category: 'Resources',
       question: 'Are the resources available in multiple languages?',
-      answer: 'Most resources are available in English, with some materials in French and Arabic depending on the course requirements. The language is indicated in each resource\'s metadata for easy identification.'
+      answer: 'Most resources are available in French, with some materials in English and Arabic depending on the course requirements. The language is indicated in each resource\'s metadata for easy identification.'
     }
   ];
 
@@ -272,8 +272,8 @@ const SupportPage = () => {
                   {Object.entries(groupedFaqs).map(([category, categoryFaqs]) => (
                     <div key={category}>
                       <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                        <Badge variant="outline" className="border-blue-500 text-blue-400">
-                          {category}
+                        <Badge className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">
+                          {category.toUpperCase()}
                         </Badge>
                         <span className="text-gray-400 text-sm">({categoryFaqs.length})</span>
                       </h3>
@@ -323,8 +323,8 @@ const SupportPage = () => {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-semibold text-white">{link.title}</h4>
-                            <Badge variant="outline" className="text-xs border-gray-600 text-gray-400">
-                              {link.category}
+                            <Badge className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">
+                              {link.category.toUpperCase()}
                             </Badge>
                           </div>
                           <p className="text-gray-400 text-sm mb-3">{link.description}</p>
@@ -332,10 +332,15 @@ const SupportPage = () => {
                             onClick={() => window.open(link.url, '_blank')}
                             size="sm"
                             className="bg-blue-600 hover:bg-blue-700 text-white"
-                          >
+                            >
                             <ExternalLink className="w-3 h-3 mr-1" />
                             Visit Site
                           </Button>
+                            {link.title === "University's Official Site" && (
+                              <Badge className="ml-2 bg-green-600 text-white text-xs font-semibold rounded-lg px-2 py-1 shadow-sm border-0 animate-pulse">
+                                Welcome New Students! 2025-2026
+                              </Badge>
+                            )}
                         </div>
                       </div>
                     </CardContent>

@@ -119,12 +119,11 @@ const ResourceFilters = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="pdf">PDF</SelectItem>
-            <SelectItem value="document">Document</SelectItem>
-            <SelectItem value="presentation">Presentation</SelectItem>
-            <SelectItem value="video">Video</SelectItem>
             <SelectItem value="link">Link</SelectItem>
-            <SelectItem value="image">Image</SelectItem>
+            <SelectItem value="courses">Courses</SelectItem>
+            <SelectItem value="project">Project</SelectItem>
+            <SelectItem value="tp">TP</SelectItem>
+            <SelectItem value="td">TD</SelectItem>
             <SelectItem value="exams">Exams</SelectItem>
             <SelectItem value="disabled">Disabled</SelectItem>
           </SelectContent>
