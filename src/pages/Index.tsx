@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import Sidebar from '@/components/Sidebar';
 import BottomBar from '@/components/BottomBar';
@@ -18,8 +19,14 @@ const Index = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const navigate = useNavigate();
+
   const handleItemClick = (item: string) => {
-    setActiveItem(item);
+    if (item === 'admin') {
+      navigate('/admin');
+    } else {
+      setActiveItem(item);
+    }
   };
 
   const renderContent = () => {
