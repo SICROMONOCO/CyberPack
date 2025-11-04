@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import TopBar from '@/components/TopBar';
@@ -15,15 +15,20 @@ const Index = () => {
   const [activeItem, setActiveItem] = useState('home');
   const [subjectFilter, setSubjectFilter] = useState<null | { subjectId: string; branchId?: string; semesterId?: string }>(null);
   const isMobile = useMobile();
+  const navigate = useNavigate();
 
   const handleItemClick = (item: string) => {
+    if (item === 'admin') {
+      navigate('/admin');
+      return;
+    }
     setActiveItem(item);
     if (item !== 'resources') {
       setSubjectFilter(null);
     }
   };
 
-  const handleSubjectCardClick = (subject: any) => {
+  const handleSubjectCardClick = (subject: { id: string; branchId?: string; semesterId?: string }) => {
     setSubjectFilter({ subjectId: subject.id, branchId: subject.branchId, semesterId: subject.semesterId });
     setActiveItem('resources');
   };
