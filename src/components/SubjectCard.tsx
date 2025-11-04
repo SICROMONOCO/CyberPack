@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { BookOpen, Tag, User, Award, Copy, Clock } from 'lucide-react';
+import { BookOpen, User, Copy, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
@@ -25,27 +25,12 @@ interface SubjectCardProps {
 }
 
 const SubjectCard = ({ subject, onClick }: SubjectCardProps) => {
-  const getTagColor = (tag: string) => {
-    switch (tag) {
-      case 'Disciplinary':
-        return 'bg-blue-600 text-blue-100';
-      case 'Soft Skills':
-        return 'bg-green-600 text-green-100';
-      case 'Core':
-        return 'bg-purple-600 text-purple-100';
-      case 'Elective':
-        return 'bg-orange-600 text-orange-100';
-      default:
-        return 'bg-gray-600 text-gray-100';
-    }
-  };
-
   const handleCopyCode = async () => {
     if (!subject.code) return;
     try {
       await navigator.clipboard.writeText(subject.code);
   toast({ title: 'Code copied', description: 'Subject code copied to clipboard.' });
-    } catch (e) {
+    } catch {
   toast({ title: 'Copy failed', description: 'Could not copy subject code.' });
     }
   };
@@ -60,7 +45,7 @@ const SubjectCard = ({ subject, onClick }: SubjectCardProps) => {
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick && onClick(subject);
+          if (onClick) onClick(subject);
         }
       }}
     >

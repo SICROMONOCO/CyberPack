@@ -4,15 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 
 const AboutPage = () => {
-  const teamMembers = [
-    {
-      name: 'LXO Group',
-      role: 'Founder & Lead Developer',
-      description: 'student passionate about creating optimized solutions for real problems',
-      icon: Shield
-    }
-  ];
-
   const milestones = [
     {
       year: '2024',

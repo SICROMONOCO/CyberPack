@@ -4,7 +4,6 @@ import { Search } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import ResourceCard from './ResourceCard';
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 // Local minimal resource shape used here to avoid depending on mock data typings
 type ResourceBase = {
   id: string;

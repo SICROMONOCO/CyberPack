@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, FileText, Calendar } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import SubjectCard from './SubjectCard';
 import ProgramCard from './ProgramCard';
@@ -66,7 +66,7 @@ const SubjectsPage = ({ onSubjectClick }: SubjectsPageProps) => {
       if (branchParam) {
         setSelectedBranch(branchParam);
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
   }, []);
