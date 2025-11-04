@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { BookOpen, Tag, User, Award, Copy, Clock } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,10 +18,13 @@ interface SubjectCardProps {
     instructor?: string;
     branchName: string;
     semesterName: string;
+    branchId?: string;
+    semesterId?: string;
   };
+  onClick?: (subject: SubjectCardProps['subject']) => void;
 }
 
-const SubjectCard = ({ subject }: SubjectCardProps) => {
+const SubjectCard = ({ subject, onClick }: SubjectCardProps) => {
   const getTagColor = (tag: string) => {
     switch (tag) {
       case 'Disciplinary':
@@ -47,7 +51,19 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
   };
 
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01]">
+    <Card
+      className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01] cursor-pointer"
+      onClick={() => onClick && onClick(subject)}
+      tabIndex={0}
+      role="button"
+      aria-label={`View resources for subject ${subject.title}`}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick && onClick(subject);
+        }
+      }}
+    >
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="inline-flex items-center justify-center rounded-lg bg-indigo-700 w-12 h-12 flex-shrink-0">
@@ -63,19 +79,19 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
                   {subject.code && (
                     <span className="inline-flex items-center gap-2 bg-gray-800 px-2 py-1 rounded text-xs text-gray-300 font-mono">
                       {subject.code}
-                      <button onClick={handleCopyCode} className="ml-2 p-1 rounded text-gray-400 hover:text-gray-200" aria-label="Copy subject code">
+                      <button onClick={e => { e.stopPropagation(); handleCopyCode(); }} className="ml-2 p-1 rounded text-gray-400 hover:text-gray-200" aria-label="Copy subject code">
                         <Copy className="w-3 h-3" />
                       </button>
                     </span>
                   )}
 
                   {subject.tag && (
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${getTagColor(subject.tag)} `}>
+                    <Badge className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">
                       {subject.tag.toUpperCase()}
-                    </span>
+                    </Badge>
                   )}
 
-                  <span className="text-gray-500">• {subject.creditHours} C</span>
+                  <span className="text-gray-500">2 {subject.creditHours} C</span>
                 </div>
               </div>
 
@@ -91,7 +107,7 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
             {subject.prerequisites && subject.prerequisites.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {subject.prerequisites.map((p, i) => (
-                  <Badge key={i} variant="outline" className="text-xs border-gray-600 text-gray-400">{p}</Badge>
+                  <Badge key={i} className="text-xs font-semibold bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-lg px-3 py-1 shadow-sm border-0">{p}</Badge>
                 ))}
               </div>
             )}
@@ -107,7 +123,7 @@ const SubjectCard = ({ subject }: SubjectCardProps) => {
 
                 <div className="inline-flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  <span>{subject.semesterName} • {subject.branchName}</span>
+                  <span>{subject.semesterName} 2 {subject.branchName}</span>
                 </div>
               </div>
 

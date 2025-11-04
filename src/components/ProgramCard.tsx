@@ -23,20 +23,18 @@ interface ProgramCardProps {
 const ProgramCard = ({ branch }: ProgramCardProps) => {
   const subjectCount = branch.semesters.reduce((total, s) => total + (s.subjects?.length || 0), 0);
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
-      <CardContent className="p-6">
-        <div className="flex gap-4">
-          <div className="inline-flex items-center justify-center rounded-lg bg-blue-700" style={{ width: '3rem', height: '3rem', minWidth: '3rem' }}>
+    <Card className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 w-full min-w-0">
+      <CardContent className="p-6 w-full min-w-0">
+        <div className="flex flex-col sm:flex-row gap-4 w-full min-w-0">
+          <div className="flex items-center justify-center rounded-lg bg-blue-700 w-12 h-12 min-w-[3rem]">
             <BookOpen className="w-6 h-6 text-white" />
           </div>
-
-          <div className="flex-1">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <h3 className="text-lg md:text-xl font-semibold text-white">{branch.name}</h3>
-                <p className="mt-2 text-sm text-gray-300 line-clamp-2">{branch.description}</p>
-
-                <div className="mt-3 flex items-center gap-4 text-sm text-gray-400">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 w-full min-w-0">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg md:text-xl font-semibold text-white break-words">{branch.name}</h3>
+                <p className="mt-2 text-sm text-gray-300 line-clamp-2 break-words">{branch.description}</p>
+                <div className="mt-3 flex items-center gap-4 text-sm text-gray-400 flex-wrap">
                   <span className="inline-flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
                     <span>{branch.semesters.length} Semesters</span>
@@ -48,14 +46,11 @@ const ProgramCard = ({ branch }: ProgramCardProps) => {
                   </span>
                 </div>
               </div>
-
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0 mt-4 md:mt-0">
                 <a href={`/subjects?branch=${encodeURIComponent(branch.id)}`} className="inline-flex items-center gap-2 text-gray-300 hover:text-white bg-gray-800 px-3 py-1 rounded">
                   <BookOpen className="w-4 h-4" />
                   View Subjects
                 </a>
-
-                {/* Brochure link: external if provided, otherwise a subtle placeholder the user can replace later */}
                 {branch.brochure ? (
                   <a href={branch.brochure} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 px-3 py-1 rounded">
                     <ExternalLink className="w-4 h-4" />

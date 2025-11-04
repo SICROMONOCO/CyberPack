@@ -86,29 +86,17 @@ const ResourceList = ({ resources, hasActiveFilters, onClearFilters }: ResourceL
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
-          {/* Open 1st and 2nd semester groups by default when present */}
-          <Accordion type="multiple" className="space-y-4" defaultValue={orderedGroupKeys.filter(k => k === '1st Semester' || k === '2nd Semester')}>
-            {orderedGroupKeys.map(groupKey => {
-              const isOpen = groupKey === '1st Semester' || groupKey === '2nd Semester';
-              return (
-                <AccordionItem key={groupKey} value={groupKey} className="bg-gray-900 border border-gray-800 rounded">
-                  <AccordionTrigger className="px-4 py-3 text-sm text-gray-200 bg-gray-950/60 hover:bg-gray-900 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="font-medium">{groupKey}</span>
-                      <span className="text-xs text-gray-400">({groups[groupKey].length})</span>
-                    </div>
-                    <span className="text-xs text-gray-400">{isOpen ? 'Open' : 'Toggle'}</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="p-4 sm:p-6 space-y-4">
-                    {groups[groupKey].map(resource => (
-                      <ResourceCard key={resource.id} resource={resource} />
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
+        <div className="space-y-8">
+          {orderedGroupKeys.map((groupKey) => (
+            <div key={groupKey} className="space-y-4">
+              <h3 className="text-lg font-bold text-blue-300">{groupKey}</h3>
+              <div className="grid gap-4 sm:gap-6">
+                {groups[groupKey].map((resource) => (
+                  <ResourceCard key={resource.id} resource={resource} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -116,3 +104,4 @@ const ResourceList = ({ resources, hasActiveFilters, onClearFilters }: ResourceL
 };
 
 export default ResourceList;
+     
