@@ -17,6 +17,24 @@ import {
   addResource 
 } from '../integrations/supabase/supabaseAcademicApi';
 
+// Type definitions for admin data
+interface Branch {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+interface Semester {
+  id: string;
+  name: string;
+}
+
+interface Subject {
+  id: string;
+  title: string;
+  code?: string;
+}
+
 const AdminPage: React.FC = () => {
   // Mode selection
   const [branchMode, setBranchMode] = useState<'select' | 'create'>('select');
@@ -24,9 +42,9 @@ const AdminPage: React.FC = () => {
   const [subjectMode, setSubjectMode] = useState<'select' | 'create'>('select');
 
   // Existing data lists
-  const [branches, setBranches] = useState<any[]>([]);
-  const [semesters, setSemesters] = useState<any[]>([]);
-  const [subjects, setSubjects] = useState<any[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [semesters, setSemesters] = useState<Semester[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   // Selected IDs
   const [selectedBranchId, setSelectedBranchId] = useState<string>('');
@@ -161,8 +179,8 @@ const AdminPage: React.FC = () => {
           return;
         }
         const creditHours = newSubject.credit_hours ? parseInt(newSubject.credit_hours, 10) : undefined;
-        if (creditHours !== undefined && isNaN(creditHours)) {
-          toast.error('Credit hours must be a number');
+        if (creditHours !== undefined && (isNaN(creditHours) || creditHours < 0)) {
+          toast.error('Credit hours must be a non-negative number');
           return;
         }
         const prerequisites = (newSubject.prerequisites || '').split(',').map((p: string) => p.trim()).filter(Boolean);
@@ -226,12 +244,12 @@ const AdminPage: React.FC = () => {
         await loadBranches();
         setNewBranch({ name: '', description: '', brochure: '' });
       }
-      if (semesterMode === 'create' && selectedBranchId) {
-        await loadSemesters(selectedBranchId);
+      if (semesterMode === 'create' && branchId) {
+        await loadSemesters(branchId);
         setNewSemester({ name: '' });
       }
-      if (subjectMode === 'create' && selectedSemesterId) {
-        await loadSubjects(selectedSemesterId);
+      if (subjectMode === 'create' && semesterId) {
+        await loadSubjects(semesterId);
         setNewSubject({
           title: '',
           description: '',

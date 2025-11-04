@@ -67,12 +67,14 @@ export async function getSubjectsBySemester(semesterId: string) {
 export async function addBranch(branch: { name: string; description?: string; brochure?: string }) {
   const { data, error } = await supabase.from('branches').insert(branch).select();
   if (error) throw error;
+  if (!data || data.length === 0) throw new Error('Failed to create branch');
   return data[0];
 }
 
 export async function addSemester(semester: { name: string; branch_id: string }) {
   const { data, error } = await supabase.from('semesters').insert(semester).select();
   if (error) throw error;
+  if (!data || data.length === 0) throw new Error('Failed to create semester');
   return data[0];
 }
 
@@ -88,6 +90,7 @@ export async function addSubject(subject: {
 }) {
   const { data, error } = await supabase.from('subjects').insert(subject).select();
   if (error) throw error;
+  if (!data || data.length === 0) throw new Error('Failed to create subject');
   return data[0];
 }
 
@@ -106,5 +109,6 @@ export async function addResource(resource: {
 }) {
   const { data, error } = await supabase.from('resources').insert(resource).select();
   if (error) throw error;
+  if (!data || data.length === 0) throw new Error('Failed to create resource');
   return data[0];
 }
