@@ -38,7 +38,7 @@ const SubjectCard = ({ subject, onClick }: SubjectCardProps) => {
   return (
     <Card
       className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:scale-[1.01] cursor-pointer"
-      onClick={() => onClick && onClick(subject)}
+      onClick={() => onClick?.(subject)}
       tabIndex={0}
       role="button"
       aria-label={`View resources for subject ${subject.title}`}

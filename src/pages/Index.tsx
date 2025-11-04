@@ -11,6 +11,12 @@ import SupportPage from '@/pages/SupportPage';
 import AboutPage from '@/components/AboutPage';
 import useMobile from '@/hooks/use-mobile';
 
+type SubjectClickHandler = {
+  id: string;
+  branchId?: string;
+  semesterId?: string;
+};
+
 const Index = () => {
   const [activeItem, setActiveItem] = useState('home');
   const [subjectFilter, setSubjectFilter] = useState<null | { subjectId: string; branchId?: string; semesterId?: string }>(null);
@@ -28,7 +34,7 @@ const Index = () => {
     }
   };
 
-  const handleSubjectCardClick = (subject: { id: string; branchId?: string; semesterId?: string }) => {
+  const handleSubjectCardClick = (subject: SubjectClickHandler) => {
     setSubjectFilter({ subjectId: subject.id, branchId: subject.branchId, semesterId: subject.semesterId });
     setActiveItem('resources');
   };
