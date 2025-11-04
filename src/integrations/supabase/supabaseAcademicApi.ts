@@ -32,6 +32,38 @@ export async function getResourcesForSubject(subjectId: string) {
 
 // --- WRITE OPERATIONS FOR ADMIN ---
 
+// Get all branches for selection
+export async function getAllBranches() {
+  const { data, error } = await supabase
+    .from('branches')
+    .select('id, name, description')
+    .order('name');
+  if (error) throw error;
+  return data || [];
+}
+
+// Get semesters for a specific branch
+export async function getSemestersByBranch(branchId: string) {
+  const { data, error } = await supabase
+    .from('semesters')
+    .select('id, name')
+    .eq('branch_id', branchId)
+    .order('name');
+  if (error) throw error;
+  return data || [];
+}
+
+// Get subjects for a specific semester
+export async function getSubjectsBySemester(semesterId: string) {
+  const { data, error } = await supabase
+    .from('subjects')
+    .select('id, title, code')
+    .eq('semester_id', semesterId)
+    .order('title');
+  if (error) throw error;
+  return data || [];
+}
+
 export async function addBranch(branch: { name: string; description?: string; brochure?: string }) {
   const { data, error } = await supabase.from('branches').insert(branch).select();
   if (error) throw error;
