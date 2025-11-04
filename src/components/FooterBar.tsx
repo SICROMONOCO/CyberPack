@@ -1,5 +1,4 @@
 import React from 'react';
-import { Github, Link as LinkIcon } from 'lucide-react';
 
 const FooterBar = () => (
   <footer

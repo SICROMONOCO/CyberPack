@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, ExternalLink, Calendar, FileText, Video, Link as LinkIcon, User, Tag, Copy, Clock, Globe, Eye, BookOpen, Award } from 'lucide-react';
+import { Download, ExternalLink, Calendar, FileText, Link as LinkIcon, User, Tag, Copy, Clock, Globe, Eye, BookOpen, Award } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -96,7 +96,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     try {
       await navigator.clipboard.writeText(resource.url);
   toast({ title: 'Link copied', description: 'Resource URL copied to clipboard.' });
-    } catch (e) {
+    } catch {
   toast({ title: 'Copy failed', description: 'Could not copy URL to clipboard.' });
     }
   };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ResourceStats from './ResourceStats';
 import ResourceFilters from './ResourceFilters';
-import ResourceFiltersMobile from './ResourceFiltersMobile';
 import ResourceList from './ResourceList';
 import { getBranchesWithSemestersAndSubjects, getResourcesForSubject } from '@/integrations/supabase/supabaseAcademicApi';
 

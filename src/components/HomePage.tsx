@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, FolderOpen, HelpCircle, ArrowRight, Users, Award, Clock } from 'lucide-react';
+import { BookOpen, FolderOpen, HelpCircle, ArrowRight } from 'lucide-react';
 
 interface HomePageProps {
   onNavigate?: (section: string) => void;

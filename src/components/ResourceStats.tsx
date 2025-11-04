@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Download, Upload, Calendar, User } from 'lucide-react';
+import { Download, Upload, Calendar } from 'lucide-react';
 
 interface Stats {
   total: number;

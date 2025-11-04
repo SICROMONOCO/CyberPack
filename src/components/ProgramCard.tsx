@@ -1,8 +1,6 @@
 import React from 'react';
 import { BookOpen, FileText, Calendar, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 export type SupabaseBranch = {
   id: string;

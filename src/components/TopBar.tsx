@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, BookOpen, FolderOpen, HelpCircle, Info } from 'lucide-react';
+import { Home, BookOpen, FolderOpen, HelpCircle, Info, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TopBarProps {
@@ -14,6 +14,7 @@ const TopBar = ({ activeItem, onItemClick }: TopBarProps) => {
     { id: 'resources', label: 'Resources', icon: FolderOpen },
     { id: 'support', label: 'Support', icon: HelpCircle },
     { id: 'about', label: 'About Us', icon: Info },
+    { id: 'admin', label: 'Admin', icon: Settings },
   ];
 
   return (
