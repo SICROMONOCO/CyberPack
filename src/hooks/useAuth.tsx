@@ -3,11 +3,18 @@ import bcrypt from 'bcryptjs';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => Promise<boolean>;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
+interface SessionData {
+  expiresAt: number;
+}
+
 const AuthContext = createContext<AuthContextType | null>(null);
+
+// Session duration: 1 hour
+const SESSION_DURATION_MS = 60 * 60 * 1000;
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,15 +22,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const session = localStorage.getItem('session');
     if (session) {
-      setIsAuthenticated(true);
+      try {
+        const sessionObj: SessionData = JSON.parse(session);
+        if (sessionObj.expiresAt && Date.now() < sessionObj.expiresAt) {
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem('session');
+          setIsAuthenticated(false);
+        }
+      } catch (e) {
+        localStorage.removeItem('session');
+        setIsAuthenticated(false);
+      }
     }
   }, []);
 
-  const login = async (password: string) => {
+  const login = async (username: string, password: string) => {
+    // Validate both username and password together to prevent username enumeration
+    const expectedUsername = import.meta.env.VITE_ADMIN_USERNAME;
     const hashedPassword = import.meta.env.VITE_ADMIN_PASSWORD_HASH;
-    const isMatch = await bcrypt.compare(password, hashedPassword);
-    if (isMatch) {
-      localStorage.setItem('session', 'authenticated');
+    
+    // Always check password even if username is wrong (timing attack mitigation)
+    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+    const isUsernameMatch = username === expectedUsername;
+    
+    if (isUsernameMatch && isPasswordMatch) {
+      const expiresAt = Date.now() + SESSION_DURATION_MS;
+      localStorage.setItem('session', JSON.stringify({ expiresAt }));
       setIsAuthenticated(true);
       return true;
     }

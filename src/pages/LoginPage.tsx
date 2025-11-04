@@ -15,13 +15,9 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === import.meta.env.VITE_ADMIN_USERNAME) {
-      const success = await login(password);
-      if (success) {
-        navigate('/admin');
-      } else {
-        toast.error('Invalid credentials');
-      }
+    const success = await login(username, password);
+    if (success) {
+      navigate('/admin');
     } else {
       toast.error('Invalid credentials');
     }
